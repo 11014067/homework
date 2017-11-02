@@ -56,9 +56,10 @@ def extract_tvseries(dom):
 
 def save_csv(f, tvseries): 
 	''' Output a CSV file containing highest rated TV-series. ''' 
-	# heleo
+	# Write the titles in the CSV file.
 	writer = csv.writer(f) 
 	writer.writerow(['Title', 'Rating', 'Genre', 'Actors', 'Runtime'])
+	# Writing the information in the CSV file.
 	for row in tvseries:
 		writer.writerows(row)
 
