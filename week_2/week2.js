@@ -31,12 +31,15 @@ function createTransform(domain, range){
 * Get the minimum and maximum of a column in a list.
 **/
 function minMax(list, j){
+	// make a min and max
 	var minInt;
 	var maxInt;
 	if (j >= 0 && j < 10){
+		// get a starting value
 		minInt = list[0][j];
 		maxInt = list[0][j];
-		for (var i = 0; i < list.length; i++){
+		for (var i = 1; i < list.length; i++){
+			// if the value is the new max or min, save that
 			if (list[i][j] < minInt){
 				minInt = list[i][j];
 			}
@@ -46,8 +49,10 @@ function minMax(list, j){
 		}
 	}
 	else{
+		// if the given index is not numerical and between 0 and 9, return NaN
 		return NaN
 	}
+	// return the minimum and maximum in a list
 	return [minInt, maxInt]
 }
 
@@ -72,6 +77,7 @@ function getData(){
 * Draw the Graph.
 **/	
 function drawGraph(){
+	// make a list for the data
 	var data = []
 	
 	// get the data split on the lines
@@ -83,7 +89,7 @@ function drawGraph(){
 		// column split the data
 		var columnData = splitData[i].split(",");
 		
-		// get the date relative to the first
+		// get the date relative to the first in days
 		temp = "" + parseInt(columnData[0]);
 		// calculate the day by converting it to miliseconds from 1970-01-01
 		temp = new Date(temp.substring(0,4) + "-" + temp.substring(4,6) + "-" + temp.substring(6,8))
@@ -119,7 +125,6 @@ function drawGraph(){
 	domainTemp[1] = domainTemporary[0];
 	var rangeDay = [canvasDayMin, canvasDayMax];
 	var rangeTemp = [canvasTempMin, canvasTempMax];
-	console.log(rangeDay);
 	
 	// get the transform functions
 	var abDay = createTransform(domainDay, rangeDay);
@@ -138,18 +143,7 @@ function drawGraph(){
 	canvas.lineTo(canvasDayMax, canvasTempMax + 10);
 	canvas.stroke();
 	
-	// make the Y axis.
-	canvas.textAlign = "right";
-	for (var i = 0; i < yAxis.length; i++){
-		// make the Y axis label
-		place = parseInt(yAxis[i]) * 10;
-		canvas.fillText(yAxis[i], canvasDayMin - 20, abTemp(place) + 2);
-		// make a line to that label
-		canvas.moveTo(canvasDayMin - 10, abTemp(place));
-		canvas.lineTo(canvasDayMin - 15, abTemp(place));
-		canvas.stroke();
-		}
-	
+	// make the X axis
 	for (var i = 0; i < xAxis.length; i++){
 		// make the x axis label and rotate on that point
 		canvas.save();
@@ -160,6 +154,18 @@ function drawGraph(){
 		// make a line to that label
 		canvas.moveTo(abDay(xAxis[i][1]), canvasTempMax + 10);
 		canvas.lineTo(abDay(xAxis[i][1]), canvasTempMax + 20);
+		canvas.stroke();
+		}
+	
+	// make the Y axis.
+	canvas.textAlign = "right";
+	for (var i = 0; i < yAxis.length; i++){
+		// make the Y axis label
+		place = parseInt(yAxis[i]) * 10;
+		canvas.fillText(yAxis[i], canvasDayMin - 20, abTemp(place) + 2);
+		// make a line to that label
+		canvas.moveTo(canvasDayMin - 10, abTemp(place));
+		canvas.lineTo(canvasDayMin - 15, abTemp(place));
 		canvas.stroke();
 		}
 	
