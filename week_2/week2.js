@@ -17,7 +17,7 @@ function createTransform(domain, range){
 	var rangeMin = range[0]
 	var rangeMax = range[1]
 
-	// formulas to calculate the alpha and the beta
+	// calculate alpha and beta
 	var alpha = (rangeMax - rangeMin) / (domainMax - domainMin)
 	var beta = rangeMax - alpha * domainMax
 
@@ -66,18 +66,17 @@ function getData(){
 		// when done save the data and call the drawGraph function
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("rawData").value = requestData.responseText;
-			drawGraph();
+			drawData();
 			}
 		}
-	requestData.open("GET", "http://127.0.0.1:8080/week2data.txt");
+	requestData.open("GET", "week2data.txt");
 	requestData.send();
 	}
 
 /**
 * Draw the Graph.
 **/	
-function drawGraph(){
-	// make a list for the data
+function drawData(){
 	var data = []
 	
 	// get the data split on the lines
@@ -89,7 +88,7 @@ function drawGraph(){
 		// column split the data
 		var columnData = splitData[i].split(",");
 		
-		// get the date relative to the first in days
+		// get the date relative to the first
 		temp = "" + parseInt(columnData[0]);
 		// calculate the day by converting it to miliseconds from 1970-01-01
 		temp = new Date(temp.substring(0,4) + "-" + temp.substring(4,6) + "-" + temp.substring(6,8))
@@ -107,25 +106,30 @@ function drawGraph(){
 		data[i-1] = [columnData[0], parseInt(columnData[1])];
 		}
 	
-
 	// get a canvas
 	var emptyCanvas = document.getElementById("canvas")
 	var canvas = emptyCanvas.getContext("2d");
-	
-	// make the canvas and domain ranges
+
+	// make the graph ranges
 	var boundery = 100
 	var canvasDayMin = boundery;
 	var canvasDayMax = emptyCanvas.width - boundery;
 	var canvasTempMin = boundery;
 	var canvasTempMax = emptyCanvas.height - boundery;
+	
+	// make the domains
 	var domainDay = minMax(data, 0);
 	var domainTemporary = minMax(data, 1);
+	
+	// turn the temperature domain around
 	var domainTemp = [];
 	domainTemp[0] = domainTemporary[1];
 	domainTemp[1] = domainTemporary[0];
+	
+	// make the axis ranges
 	var rangeDay = [canvasDayMin, canvasDayMax];
 	var rangeTemp = [canvasTempMin, canvasTempMax];
-	
+		
 	// get the transform functions
 	var abDay = createTransform(domainDay, rangeDay);
 	var abTemp = createTransform(domainTemp, rangeTemp);
@@ -143,7 +147,10 @@ function drawGraph(){
 	canvas.lineTo(canvasDayMax, canvasTempMax + 10);
 	canvas.stroke();
 	
-	// make the X axis
+	// right align text
+	canvas.textAlign = "right";
+	
+	// make the x axis
 	for (var i = 0; i < xAxis.length; i++){
 		// make the x axis label and rotate on that point
 		canvas.save();
@@ -157,10 +164,9 @@ function drawGraph(){
 		canvas.stroke();
 		}
 	
-	// make the Y axis.
-	canvas.textAlign = "right";
+	// make the y axis.
 	for (var i = 0; i < yAxis.length; i++){
-		// make the Y axis label
+		// make the y axis label
 		place = parseInt(yAxis[i]) * 10;
 		canvas.fillText(yAxis[i], canvasDayMin - 20, abTemp(place) + 2);
 		// make a line to that label
@@ -168,6 +174,31 @@ function drawGraph(){
 		canvas.lineTo(canvasDayMin - 15, abTemp(place));
 		canvas.stroke();
 		}
+		
+	// write titles in the centre
+	canvas.textAlign = "center"
+	// graph title
+	canvas.font = "20px Calibri";
+	canvas.fillText("Temperature at De Bilt (NL) in 1997", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, boundery / 2);
+	// axis titles
+	canvas.font = "15px Calibri";
+	canvas.fillText("Date in Months", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, canvasTempMax + boundery - 20);
+	var Ytitle = "Temperature in Celcius";
+	var placement = canvasTempMin + 10
+	var steps = (canvasTempMax - canvasTempMin)/ (Ytitle.length - 1)
+	for (var i = 0; i < Ytitle.length; i++){
+		canvas.fillText(Ytitle[i], (boundery / 2), placement)
+		placement = placement + steps
+		}
+	
+	// print a zero temperature line
+	canvas.beginPath();
+	canvas.moveTo(canvasDayMin - 10, abTemp(0));
+	// make the line red
+	canvas.strokeStyle = "red";
+	canvas.lineTo(canvasDayMax, abTemp(0));
+	canvas.stroke();
+	canvas.strokeStyle = "black"
 	
 	// print the graph
 	count = 0;
@@ -192,30 +223,6 @@ function drawGraph(){
 			}
 		}
 	// draw the actual line
-	canvas.stroke();
-	
-	// write titles
-	canvas.textAlign = "center"
-	// graph title
-	canvas.font = "20px Calibri";
-	canvas.fillText("Temperature at De Bilt (NL) in 1997", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, boundery / 2);
-	// axis titles
-	canvas.font = "15px Calibri";
-	canvas.fillText("Date in Months", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, canvasTempMax + boundery - 20);
-	var Ytitle = "Temperature in Celcius";
-	var placement = canvasTempMin + 10
-	var steps = (canvasTempMax - canvasTempMin)/ (Ytitle.length - 1)
-	for (var i = 0; i < Ytitle.length; i++){
-		canvas.fillText(Ytitle[i], (boundery / 2), placement)
-		placement = placement + steps
-		}
-	
-	// print a zero temperature line
-	canvas.beginPath();
-	canvas.moveTo(canvasDayMin - 10, abTemp(0));
-	// make the line red
-	canvas.strokeStyle = "red";
-	canvas.lineTo(canvasDayMax, abTemp(0));
 	canvas.stroke();
 	
 	}
