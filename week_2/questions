@@ -1,1 +1,33 @@
+o Explain the difference between the == and the === operator.
+  The == operator compaires two objects, as does the ===. Only the ==
+  compaires with automatic type conversion and === without. This means 
+  that with == the meaning of the two objects need to be the same, whereas
+  with === the two object need to be exacly the same.
 
+o Explain what a closure is.
+  A closure is a function that makes a local variable but gives that local
+  variable back, so the variable is accesable in the next function as well.
+
+o Explain what higher order functions are.
+  Higher order functions are functions that ether take or return other 
+  functions themselfs. This will make your function shorter, which in turn
+  gives; less chance of bugs, shorter code and versatility to the function.
+  
+o Explain what a query selector is and give an example line of JavaScript
+  that uses a query selector.
+  A query selector gives you all the html blocks of the asked for type. An
+  example of such a type can be p for <p>, span for <span> or .name for a 
+  class called name. querySelector will give you the first element if there
+  and querySelectorAll will give all the elements with that tag.
+  For instance the next piece of code will color all elements with a class named
+  color turn blue.
+  function makeColor(color){
+    if (typeof(color) != typeof("")){
+      break;
+      }
+    x = document.querySelectorAll(".color");
+    for (var i = 0; i < x.length; i ++){
+      x[i].style.color = color;
+      }
+    }
+   
