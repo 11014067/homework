@@ -26,6 +26,30 @@ function createTransform(domain, range){
 		return alpha * x + beta;
 		}
 	}
+	
+/**
+* Get the minimum and maximum of a column in a list.
+**/
+function minMax(list, j){
+	var minInt;
+	var maxInt;
+	if (j >= 0 && j < 10){
+		minInt = list[0][j];
+		maxInt = list[0][j];
+		for (var i = 0; i < list.length; i++){
+			if (list[i][j] < minInt){
+				minInt = list[i][j];
+			}
+			else if (list[i][j] > maxInt){
+				maxInt = list[i][j];
+			}
+		}
+	}
+	else{
+		return NaN
+	}
+	return [minInt, maxInt]
+}
 
  /**
  * Get the data from the server.
@@ -47,7 +71,6 @@ function getData(){
 /**
 * Draw the Graph.
 **/	
-	
 function drawGraph(){
 	var data = []
 	
@@ -78,36 +101,42 @@ function drawGraph(){
 		data[i-1] = [columnData[0], parseInt(columnData[1])];
 		}
 	
-	// make the canvas and domain ranges
-	var canvasDayMin = 100;
-	var canvasDayMax = 450;
-	var canvasTempMin = 50;
-	var canvasTempMax = 350;
-	var domainDay = [0,365];
-	var domainTemp = [300, -150];
-	var rangeDay = [canvasDayMin, canvasDayMax];
-	var rangeTemp = [canvasTempMin, canvasTempMax];
-	
-	// get the transform functions
-	var abDay = createTransform(domainDay, rangeDay);
-	var abTemp = createTransform(domainTemp, rangeTemp);
 
 	// get a canvas
 	var emptyCanvas = document.getElementById("canvas")
 	var canvas = emptyCanvas.getContext("2d");
 	
-	// print the axis
-	canvas.moveTo(canvasDayMin - 10, abTemp(250));
-	canvas.lineTo(canvasDayMin - 10, canvasTempMax);
-	canvas.moveTo(canvasDayMin, canvasTempMax);
-	canvas.lineTo(canvasDayMax, canvasTempMax);
-	canvas.stroke();
+	// make the canvas and domain ranges
+	var boundery = 100
+	var canvasDayMin = boundery;
+	var canvasDayMax = emptyCanvas.width - boundery;
+	var canvasTempMin = boundery;
+	var canvasTempMax = emptyCanvas.height - boundery;
+	var domainDay = minMax(data, 0);
+	var domainTemporary = minMax(data, 1);
+	var domainTemp = [];
+	domainTemp[0] = domainTemporary[1];
+	domainTemp[1] = domainTemporary[0];
+	var rangeDay = [canvasDayMin, canvasDayMax];
+	var rangeTemp = [canvasTempMin, canvasTempMax];
+	console.log(rangeDay);
+	
+	// get the transform functions
+	var abDay = createTransform(domainDay, rangeDay);
+	var abTemp = createTransform(domainTemp, rangeTemp);
 	
 	// make the axis labels
 	yAxis = ["-15", "-10", "-5", "0", "5", "10", "15", "20", "25"];
 	xAxis = [["1997", 0], ["February", 31], ["March", 59], ["April", 91], 
 		["May", 121], ["june", 152], ["july", 182], ["august", 213], ["september", 244], 
 		["oktober", 274], ["november", 305], ["december", 335], ["1998", 365]];
+		
+	// print the axis
+	canvas.moveTo(canvasDayMin - 10, abTemp(parseInt(yAxis[0]) * 10));
+	canvas.lineTo(canvasDayMin - 10, abTemp(parseInt(yAxis[yAxis.length - 1]) * 10));
+	canvas.moveTo(canvasDayMin, canvasTempMax + 10);
+	canvas.lineTo(canvasDayMax, canvasTempMax + 10);
+	canvas.stroke();
 	
 	// make the Y axis.
 	canvas.textAlign = "right";
@@ -124,13 +153,13 @@ function drawGraph(){
 	for (var i = 0; i < xAxis.length; i++){
 		// make the x axis label and rotate on that point
 		canvas.save();
-		canvas.translate(abDay(xAxis[i][1]), canvasTempMax + 20);
+		canvas.translate(abDay(xAxis[i][1]), canvasTempMax + 30);
 		canvas.rotate(-Math.PI/4);
 		canvas.fillText(xAxis[i][0], 0,0);
 		canvas.restore()
 		// make a line to that label
-		canvas.moveTo(abDay(xAxis[i][1]), canvasTempMax);
-		canvas.lineTo(abDay(xAxis[i][1]), canvasTempMax + 10);
+		canvas.moveTo(abDay(xAxis[i][1]), canvasTempMax + 10);
+		canvas.lineTo(abDay(xAxis[i][1]), canvasTempMax + 20);
 		canvas.stroke();
 		}
 	
@@ -155,7 +184,6 @@ function drawGraph(){
 			// draw a invisible line
 			canvas.lineTo(dayPlace, tempPlace);
 			}
-		
 		}
 	// draw the actual line
 	canvas.stroke();
@@ -164,15 +192,15 @@ function drawGraph(){
 	canvas.textAlign = "center"
 	// graph title
 	canvas.font = "20px Calibri";
-	canvas.fillText("Temperature at De Bilt (NL) in 1997", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, canvasTempMin);
+	canvas.fillText("Temperature at De Bilt (NL) in 1997", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, boundery / 2);
 	// axis titles
 	canvas.font = "15px Calibri";
-	canvas.fillText("Date in Months", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, canvasTempMax + 70);
+	canvas.fillText("Date in Months", (canvasDayMax - canvasDayMin)/2 + canvasDayMin, canvasTempMax + boundery - 20);
 	var Ytitle = "Temperature in Celcius";
-	var placement = canvasTempMin + 30
-	var steps = (canvasTempMax - canvasTempMin)/ Ytitle.length
+	var placement = canvasTempMin + 10
+	var steps = (canvasTempMax - canvasTempMin)/ (Ytitle.length - 1)
 	for (var i = 0; i < Ytitle.length; i++){
-		canvas.fillText(Ytitle[i], (canvasDayMin - 50), placement)
+		canvas.fillText(Ytitle[i], (boundery / 2), placement)
 		placement = placement + steps
 		}
 	
