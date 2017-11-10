@@ -77,6 +77,7 @@ function getData(){
 * Draw the Graph.
 **/	
 function drawData(){
+	// make a list for the data
 	var data = []
 	
 	// get the data split on the lines
