@@ -18,7 +18,7 @@ function getData(){
 }
 
 /**
-* Draw the barchart for the Dutch letter frequency
+* Draw the barchart for the Dutch letter frequency.
 **/
 function svgChard(JSONdata){
 	// set all the marges
