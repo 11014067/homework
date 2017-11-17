@@ -1,0 +1,43 @@
+o How can D3 acces and change the DOM? What do select and select All do?
+    You can have a div and the D3 can read through the script and find the div and 
+    dump stuf in it or take information out of it. Select and select All are comments
+    you can use to find the div or divs you are looking for and if you want to you can
+    append a wanted change to that function.
+    
+o What are the d and i in function(d){} and function(d, i){}?
+    d is the dataset that you past on to d3 before you started the function.
+    i is the index in the dataset you are at. So if you have used d[0] and d[1] in a
+    dataset with length 6. Than the next time you cal function(d, i){} i will be 2.
+   
+o Write sample lines of JavaScript to add a div element with class "barChart1" and
+  to add a svg element with class "barChart2" with square dimensions.
+     var svgDiv = d3.select(".svgDiv")
+     var barChart1 = svgDiv.append("svg")
+                            .attr("class", "barChart1")
+     var barChart2 = svgDiv.selectAll("svg[class='barChart1']")
+                            .data(barChart2Data)
+                            .enter()
+                            .append("rect")
+                                .attr("x", 20)
+                                .attr("y", 25)
+                                .attr("height", 5)
+                                .attr("width", 5)
+                                .attr("class", "barChart2")
+    
+o Describe append, updata, enter, and exit at a high level. What does "selectAll + 
+  data + enter + append" refer to?
+    select All selects all of a thing if there.
+    data gives it a dataset.
+    enter prepares an element for a new part of the dataset.
+    append creates a div for that part of the dataset.
+    
+o What are the main differences between drawing a bar chart in HTML and SVG?
+   In SVG everything is bound together and scale them because they have a mutual script.
+     Also you can put items everywhere, when if comes over top of other thing than the last thing is on top.
+     While with HTML you have to put a lot of effert in and give it a index etc.
+
+o In drawing the simple bar chart with D3 and SVG, what elements were appended, and what
+  parts of the graph did these elements correspond to?
+    rect's where appended for each of the bars in the bar graph.
+    text's where appended for text like the title.
+    g's where appended for the axis.
