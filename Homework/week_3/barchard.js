@@ -18,14 +18,14 @@ function getData(){
 }
 
 /**
-* Draw the barchart for the Dutch letter frequency
+* Draw the barchart for the Dutch letter frequency.
 **/
 function svgChard(JSONdata){
 	// set all the marges
 	var width = 1000;
 	var height = 350;
-	var upperSpace = 100
-	var leftSpace = 100
+	var upperSpace = 100;
+	var leftSpace = 100;
 	
 	// set the barwidth
 	var barWidth = ((width - 50)/JSONdata.length)-5;
@@ -46,14 +46,14 @@ function svgChard(JSONdata){
 	var bars = d3.select(".chard");
 	
 	// draw the x axis
-	xAxis = d3.svg.axis().scale(xOrdinal).orient("bottom");
+	var xAxis = d3.svg.axis().scale(xOrdinal).orient("bottom");
 	bars.append("g")
 		.attr("class", "x_axis")
 		.attr("transform", "translate(" + leftSpace + "," + (height+upperSpace) + ")")
 		.call(xAxis);
 	
 	// draw the y axis
-	yAxis = d3.svg.axis().scale(y).orient("left");
+	var yAxis = d3.svg.axis().scale(y).orient("left");
 	bars.append("g")
 		.attr("font-size", "15px")
 		.attr("class", "y_axis")
@@ -67,14 +67,14 @@ function svgChard(JSONdata){
 		.attr("y", upperSpace / 2)
 		.attr("text-anchor", "middle")
 		.style("font-size", "25px")
-		.text("The letter frequency in the Dutch language")
+		.text("The letter frequency in the Dutch language");
 	// draw the x axis title
 	bars.append("text")
 		.attr("x", width / 2)
 		.attr("y", height + upperSpace + 40)
 		.attr("text-anchor", "middle")
 		.style("font-size", "15px")
-		.text("The letters in alphabetical order")
+		.text("The letters in alphabetical order");
 	// draw the y axis title and rotate it
 	bars.append("text")
 		.attr("x", ((height / 2) + upperSpace)*-1)
@@ -82,7 +82,7 @@ function svgChard(JSONdata){
 		.attr("transform", "rotate(-90)")
 		.attr("text-anchor", "middle")
 		.style("font-size", "15px")
-		.text("letter frequency in percentage (%)")
+		.text("letter frequency in percentage (%)");
 	
 	// draw a bar for each data point
 	bars.selectAll("data")
@@ -108,7 +108,7 @@ function svgChard(JSONdata){
 				var place = d3.select(this).attr("x");
 				place = "text[x='" + place + "']";
 				bars.selectAll(place).attr("visibility", "hidden");
-				})
+				});
 				
 	// set a invisible text div with the data for each data point
 	bars.selectAll("data")
@@ -123,5 +123,5 @@ function svgChard(JSONdata){
 		.attr("text-anchor", "middle")
 		.attr("fill", "white")
 		.attr("visibility", "hidden")
-		.text(function(NL) { return NL.percentage;})		
+		.text(function(NL) { return NL.percentage;});	
 }
