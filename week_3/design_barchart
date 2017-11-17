@@ -1,0 +1,16 @@
+Going through the script top to bottem these are my style choices:
+o A width of 1000 and height of 350 gave me a nice bar graph that was as big as 
+  possible in one window.
+o The barwidth gives you enough room to see the data.
+o I made a x axis for the data points and a x axis with the letters of the aphabet,
+  because the letters of the alphabet are better titles than the number of the 
+  position in the alphabet.
+o I made "g" divs for the axis with class attributes to see them seperately in html.
+o I appended a title atop of the Chart for information.
+o I made the bars dark blue because I realy like the color and changed it to a dark
+  red when your mouse hits it. Also when your mouse hits the rect it finds the data
+  that matches that bar and makes it visible.
+  this so only the text of the bar you are interested in is visible and you dont get overwelmed
+  with information.
+o Than I made the data white because the bars are a dark colour so they stand out.
+  
