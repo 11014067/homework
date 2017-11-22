@@ -44,3 +44,7 @@ def CSV2JSON(string):
 	
 	# Return the json file.
 	return jsonFile
+
+if __name__ == "__main__":
+	string = "Week4"
+	CSV2JSON(string)

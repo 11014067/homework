@@ -32,7 +32,7 @@ function svgChard(JSONdata){
    
 	// set linear scales for the axis to draw the data later on
 	var x = d3.scale.linear()
-			.domain([0, d3.max(JSONdata,function(NL) { return (parseInt(NL.index));})])
+			.domain([0, d3.max(JSONdata, function(NL) { return (parseInt(NL.index));})])
 			.range([0, width]);
 	var y = d3.scale.linear()
 			.domain([-1, d3.max(JSONdata, function(NL) { return parseFloat(NL.percentage); })])
