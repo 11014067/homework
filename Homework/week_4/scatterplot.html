@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- 
+Name: Sanne Oud
+Student number: 11014067
+course: data processing  
+-->
+<html>
+	<head>
+		<title>HPI plot</title>
+		<script src="scatterplot.js"></script>
+		<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	</head>
+	<body onload="loadData('Wellbeing', 'Life expectancy');">
+		<div class="dropdown">
+			<button onclick="showOptions();" class="dropbtn">Chose what you want to see</button>
+			<div id="dropdown" class="dropdown-content" style="display:none">
+				<div><a name="Wellbeing vs. Life expectancy"
+					onclick="loadData('Wellbeing', 'Life expectancy'), hideOptions();">
+					Wellbeing vs. Life expectancy</a></div>
+				<div><a name="Ecological footprint vs. Life expectancy" 
+					onclick="loadData('Ecological footprint', 'Life expectancy'), hideOptions();">
+					Ecological footprint vs. Life expectancy</a></div>
+				<div><a name="Wellbeing vs. Ecological footprint" 
+					onclick="loadData('Wellbeing', 'Ecological footprint'), hideOptions();">
+					Wellbeing vs. Ecological footprint</a></div>
+			</div>
+		</div>
+		<h1 class="title" style="text-align: center">
+		</h1>
+		<div class="plot">
+		</div>
+		<h4>* The size of the datapoints refers to the HPI or "Happy Planet Index". A big dot means that that land has a high HPI.</h4>
+		<h4>Click the link to the <a href="http://happyplanetindex.org/">data source</a> to learn more about the "Happy Planet Index".</h4>
+		<h5>This site was made by Sanne Oud.</h5>
+	</body>
+</html>
