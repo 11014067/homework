@@ -168,6 +168,12 @@ function drawChart(data, yName, xName){
 					return regionColours["Unknown"];
 					};
 				})
+			.on("mouseover", function(){
+				d3.select(this).attr("fill-opacity", "0.6")
+				})
+			.on("mouseout", function(){
+				d3.select(this).attr("fill-opacity", "1")
+				})
 			.append("title")
 				.text( function(d) { return d["Country"]; });		
 	
