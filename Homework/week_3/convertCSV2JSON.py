@@ -9,6 +9,8 @@ import csv
 import json
 
 def CSV2JSON(string):
+	# Get the name
+	string = "week5csv"
 	
 	# Get the name of the file and create a .json version.
 	csvString = string + ".csv"
@@ -46,5 +48,4 @@ def CSV2JSON(string):
 	return jsonFile
 
 if __name__ == "__main__":
-	string = "Week4"
-	CSV2JSON(string)
+	CSV2JSON()
