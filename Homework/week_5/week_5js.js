@@ -11,19 +11,7 @@ function getData(){
 			d.Vlissingen = +d.Vlissingen;
 			d["\ufeffDate"] = parseDate(d["\ufeffDate"]);
 			});
-		
-        var finalData
-			
-		for (var i = 0; i < 365; i++){
-			list = new Object();
-			list["Date"] = data[i]["\ufeffDate"]
-			list["Bilt"] = data[i].Bilt
-			list["Hoogeveen"] = data[i].Hoogeveen
-			list["Vlissingen"] = data[i].Vlissingen
-			JSON.stringify(list, finalData)
-		}
-		console.log(finalData);
-		drawGraph(finalData);
+		drawGraph(data);
 	});
 }
 
@@ -41,7 +29,7 @@ function drawGraph(data){
 		.rangeRound([0, width]);
 	
 	var y = d3.scale.linear()
-		.domain([0, d3.max(data, function(d) { return d.Bilt/10; })])
+		.domain([0, d3.max(data, function(d) { return d.Hoogeveen/10; })])
 		.rangeRound([height, 0]);
 		
 	// Define the line
