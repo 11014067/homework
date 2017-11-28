@@ -101,5 +101,54 @@ function drawGraph(data){
 			.attr("y", -(margin.left / 2))
 			.style("text-anchor", "middle")
 			.text("Y AXIS");
+			
+	var crosshairLine = d3.svg.line()
+		.x(function(d) { return d.x; })
+		.y(function(d) { return d.y; });
+		
+	//var crosshairG = g.append('g').style('display', 'none');
+    //            
+    //crosshairG.append('line')
+    //    .attr('id', 'crosshairX');
+    //crosshairG.append('line')
+    //    .attr('id', 'crosshairY');
+    //crosshairG.append('circle')
+    //    .attr('id', 'focusCircle')
+    //    .attr('r', 5);
+	//
+	//var mouse = d3.mouse(this);
+	//var closeSelector = d3.bisector(function(d) { return d[0]; }).left;
+    ////var mouseDate = xScale.invert(mouse[0]);
+    //var i = closeSelector(data, mouse[0]); // returns the index to the current data item
+    //
+    //var d0 = data[i - 1]
+    //var d1 = data[i];
+    //// work out which date value is closest to the mouse
+    //var d = mouseDate - d0[0] > d1[0] - mouseDate ? d1 : d0;
+    //
+    //var xCoor = x(d[0]);
+    //var yCoor = y(d[1]);
+    //
+    //focus.select('#focusCircle')
+    //    .attr('cx', xCoor)
+    //    .attr('cy', yCoor);
+    //focus.select('#focusLineX')
+    //    .attr('x1', xCoor).attr('y1', yScale(yDomain[0]))
+    //    .attr('x2', xCoor).attr('y2', yScale(yDomain[1]));
+    //focus.select('#focusLineY')
+    //    .attr('x1', xScale(xDomain[0])).attr('y1', y)
+    //    .attr('x2', xScale(xDomain[1])).attr('y2', y);
 	
+	var crosshairMiddle = [{x: width / 2, y: 0}, {x: width / 2, y: height}]	
+	var crosshairData2 = [{x: 0, y: height / 2}, {x: width, y: height / 2}]
+	
+	// crosshairs ---Should be mousemove over whole thing
+	g.append("path")
+		.attr("fill", "none")
+		.attr("stroke", "black")
+		.attr("d", crosshairLine(crosshairMiddle))
+		.on("mousemove", function() {
+			d3.select(this).attr("d", crosshairLine(crosshairData2));
+		})
+		.on('mouseout', function() { focus.style('display', 'none'); })
 };
