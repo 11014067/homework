@@ -8,7 +8,8 @@ This fear is enhanced by the attention for smaller "could be" terrorism attacks 
 Climax: With statistics about migrants and terrorist attack we want to change this idea that the media sketches. The data shows that 
 there actually is a negative correlation between migrants and terrorist attackts. This means that there is a decrease in terrorism 
 attacks with the incomming of more migrants. We also want to show that a lot of terrorist attacks are committed by Europian organizations. 
-Consequences: When more people realize immigrants are no threat, we hope people will be more open to immigrants and there will be less hatred. This could eventually even decrease tensions, which may result in less problems and violence. 
+Consequences: When more people realize immigrants are no threat, we hope people will be more open to immigrants and there will be less hatred. 
+This could eventually even decrease tensions, which may result in less problems and violence. 
 Take home message: Immigrants are not a threat to native inhabitants and should be distinguished from terrorist
 
 Visualisation: A graph of immigrants vs. terrorist attack related deaths.
