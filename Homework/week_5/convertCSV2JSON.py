@@ -10,7 +10,7 @@ import json
 
 def CSV2JSON():
 	# Get the name
-	string = "week_5csv"
+	string = "week_5csvAllInOne"
 	
 	# Get the name of the file and create a .json version.
 	csvString = string + ".csv"
@@ -33,6 +33,7 @@ def CSV2JSON():
 		if header == []:
 			for key in row:
 				key2 = "" + key
+				key2 = key2
 				header.append(key)
 		# Make a dict of all the data.
 		else:
