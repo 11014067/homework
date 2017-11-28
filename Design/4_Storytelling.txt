@@ -5,10 +5,10 @@ Story: Immigrants do not cause an increase in terrorism related attacks.
 Opening: A lot of people are easily influenced by the media, which portraited immigrants people how are 
   distressed and will cause terrost attacks. Which is enlanged even more by the fact that social media 
   is shedding light on even more and smaller "could be" terrorism attacks.
-climax: There is actualy a decrease in terrorism attacks at the time of a big flow of immigrants.
+Climax: There is actualy a decrease in terrorism attacks at the time of a big flow of immigrants.
 Consequences: We should be more open to immigrants.
 Take home message: We should not be so scared of immigrants and help them because they where so desperate they 
-  left there home country to find a future.
+  left there home country to find a future. Also, some data just doesn't correlate. 
 
 visualisation: A graph of immigrants vs. terrorist attack related deaths.
 and maybe immigrants vs. amount of terrorist attacks or some highlighted countrys.
