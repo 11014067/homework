@@ -1,14 +1,16 @@
 Title sugestion: Misconceptions about immigrants
 
-Audience: Adults
-Story: Immigrants do not cause an increase in terrorism related attacks.
-Opening: A lot of people are easily influenced by the media, which portraited immigrants people how are 
-  distressed and will cause terrost attacks. Which is enlanged even more by the fact that social media 
-  is shedding light on even more and smaller "could be" terrorism attacks.
-climax: There is actualy a decrease in terrorism attacks at the time of a big flow of immigrants.
-Consequences: We should be more open to immigrants.
-Take home message: We should not be so scared of immigrants and help them because they where so desperate they 
-  left there home country to find a future.
+Audience: Native inhabitants of European countries (mainly people that are scared immigrant flows will cause more terrorism)
+Story: There is no positive correlation between immigrants and terrorist related attacks.
+Opening: There is an increasing immigrant flow to Europe the past few years, people have the idea that this causes more terrorism. 
+This idea is supported by the media that focusus on immigrants that cause terrorist attacks and politicians that are spreadding fear. 
+This fear is enhanced by the attention for smaller "could be" terrorism attacks in the media. 
+Climax: With statistics about migrants and terrorist attack we want to change this idea that the media sketches. The data shows that 
+there actually is a negative correlation between migrants and terrorist attackts. This means that there is a decrease in terrorism 
+attacks with the incomming of more migrants. We also want to show that a lot of terrorist attacks are committed by Europian organizations. 
+Consequences: When more people realize immigrants are no threat, we hope people will be more open to immigrants and there will be less hatred. 
+This could eventually even decrease tensions, which may result in less problems and violence. 
+Take home message: Immigrants are not a threat to native inhabitants and should be distinguished from terrorist
 
-visualisation: A graph of immigrants vs. terrorist attack related deaths.
+Visualisation: A graph of immigrants vs. terrorist attack related deaths.
 and maybe immigrants vs. amount of terrorist attacks or some highlighted countrys.
