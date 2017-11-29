@@ -9,11 +9,13 @@ function getData(){
 			d.Bilt = +d.Bilt;
 			d.Hoogeveen = +d.Hoogeveen;
 			d.Vlissingen = +d.Vlissingen;
-			d["\ufeffDate"] = parseDate(d["\ufeffDate"]);
+			d.randomDate = d["\ufeffDate"] = parseDate(d["\ufeffDate"]);
 			});
 		drawGraph(data);
 	});
 }
+
+//kleuren in disign keuze
 
 function drawGraph(data){
 	console.log(data);
@@ -29,7 +31,8 @@ function drawGraph(data){
 		.rangeRound([0, width]);
 	
 	var y = d3.scale.linear()
-		.domain([0, d3.max(data, function(d) { return d.Hoogeveen/10; })])
+		.domain([d3.min(data, function(d) { return Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10; }),
+			d3.max(data, function(d) { return Math.max(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10; })])
 		.rangeRound([height, 0]);
 		
 	// Define the line
@@ -106,7 +109,74 @@ function drawGraph(data){
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
 		
-	//var crosshairG = g.append('g').style('display', 'none');
+	
+	var mouseX = 100;
+	var mouseX2 = 300;
+	var mouseY = 100;
+	var crosshairMouseX = [{x: mouseX, y: 0}, {x: mouseX, y: height}];
+	var crosshairMouseY = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
+
+	
+	// crosshairs ---Should be mousemove over whole thing
+	crosshairGX = g.append("path")
+		.attr("fill", "none")
+		.attr("stroke", "black")
+		.attr("d", crosshairLine(crosshairMouseX));
+	crosshairGY = g.append("path")
+		.attr("fill", "none")
+		.attr("stroke", "black")
+		.attr("d", crosshairLine(crosshairMouseY));
+		
+	var bisectDate = d3.bisector(function(d) { console.log("hoi"); return d["/ufeffDate"]; }).right;
+	console.log(bisectDate);
+	
+	svg.on("mousemove", function() {
+		d3.selectAll(".information").remove()
+		var coordinates = d3.mouse(this);
+		
+		// change the coordinates to match the mouse in the graph
+		mouseX = coordinates[0] - margin.left;
+		mouseY = coordinates[1] - margin.top;
+		
+		// if the mouse is out of bounds, stop at the bound
+		if (mouseX < 0) { mouseX = 0 }
+		else if (mouseX > width) { mouseX = width };
+		if (mouseY < 0) { mouseY = 0 }
+		else if (mouseY > height) { mouseY = height };
+		
+		// get the date at the mousepoint
+		var dateX = x.invert(mouseX);
+		index = getDataIndex(data, dateX);
+		
+		// get the x and y per location
+		xDate = 
+		
+		// draw the crosshairs
+		crosshairMouseMove = [[{x: mouseX, y: 0}, {x: mouseX, y: height}],[{x: 0, y: mouseY}, {x: width, y: mouseY}]];
+		crosshairGX.attr("d", crosshairLine(crosshairMouseMove[0]));
+		crosshairGY.attr("d", crosshairLine(crosshairMouseMove[1]));
+		
+		// add text to the margin
+		g.append("text")
+			.attr("class", "information")
+			.attr("x", coordinates[0])
+			.attr("y", coordinates[1])
+			.text("hey");
+
+		});
+		
+}
+
+function getDataIndex(data, date){
+	var results = [Math.abs(data[0]["randomDate"].getTime() - date.getTime()), 0] 
+	for (var i = 0; i < data.length; i++){
+		if (Math.abs(data[i]["randomDate"].getTime() - date.getTime()) < results[0]){
+			results = [Math.abs(data[i]["randomDate"].getTime() - date.getTime()), i]
+			}
+		}
+	return results[1];
+}
+//var crosshairG = g.append('g').style('display', 'none');
     //            
     //crosshairG.append('line')
     //    .attr('id', 'crosshairX');
@@ -138,17 +208,3 @@ function drawGraph(data){
     //focus.select('#focusLineY')
     //    .attr('x1', xScale(xDomain[0])).attr('y1', y)
     //    .attr('x2', xScale(xDomain[1])).attr('y2', y);
-	
-	var crosshairMiddle = [{x: width / 2, y: 0}, {x: width / 2, y: height}]	
-	var crosshairData2 = [{x: 0, y: height / 2}, {x: width, y: height / 2}]
-	
-	// crosshairs ---Should be mousemove over whole thing
-	g.append("path")
-		.attr("fill", "none")
-		.attr("stroke", "black")
-		.attr("d", crosshairLine(crosshairMiddle))
-		.on("mousemove", function() {
-			d3.select(this).attr("d", crosshairLine(crosshairData2));
-		})
-		.on('mouseout', function() { focus.style('display', 'none'); })
-};
