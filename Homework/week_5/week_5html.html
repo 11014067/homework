@@ -4,7 +4,27 @@
 		<script src="week_5js.js"></script>
 		<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	</head>
-	<body onload="getData();">
+	<body onload="getData('2000');">
+		<div class="dropdown">
+			<button onclick="showOptions();" class="dropbuton">Chose the year you want to see</button>
+			<div id="dropdown" class="dropdown-content" style="display:none">
+				<div><a name="2000"
+					onclick="getData('2000'), hideOptions();">
+					2000</a></div>
+				<div><a name="2005" 
+					onclick="getData('2005'), hideOptions();">
+					2005</a></div>
+				<div><a name="2010" 
+					onclick="getData('2010'), hideOptions();">
+					2010</a></div>
+				<div><a name="2015" 
+					onclick="getData('2015'), hideOptions();">
+					2015</a></div>
+			</div>
+		</div>
+		<h2 class="title" style="text-align: center"></h2>
 		<svg width="1000" height="500"></svg>
+		<h4>Click the link to the <a href="http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi">data source</a> to learn more about the Dutch weather.</h4>
+		<h5>This site was made by Sanne Oud.</h5>
 	</body>
 </html>

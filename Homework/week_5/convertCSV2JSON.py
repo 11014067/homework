@@ -10,7 +10,7 @@ import json
 
 def CSV2JSON():
 	# Get the name
-	string = "week_5csvAllInOne"
+	string = "week_5csv2015"
 	
 	# Get the name of the file and create a .json version.
 	csvString = string + ".csv"

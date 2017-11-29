@@ -1,33 +1,55 @@
 
-function getData(){
+function getData(year){
 		
 	var parseDate = d3.time.format("%d-%m-%y").parse;
+	jsonName = "week_5csv" + year + ".json"
+	d3.select(".title").text("The temperature at De Bilt, Hoogeveen and Vlissingen in the year " + year + 
+		" in degrees Celcius")
 	// get the json data via d3
-	d3.json("week_5csvAllInOne.json", function(error, data) {
+	d3.json(jsonName, function(error, data) {
 		if (error) throw error;
 		data.forEach(function(d) {
 			d.Bilt = +d.Bilt;
 			d.Hoogeveen = +d.Hoogeveen;
 			d.Vlissingen = +d.Vlissingen;
-			d.randomDate = d["\ufeffDate"] = parseDate(d["\ufeffDate"]);
+			d.dateCopy = d["\ufeffDate"] = parseDate(d["\ufeffDate"]);
 			});
 		drawGraph(data);
 	});
 }
 
+/**
+* If this function is called, drop down the dropdown menu.
+**/
+function showOptions() {
+    document.getElementById("dropdown").style.display='block';
+}
+
+/**
+* If this function is called, hide the dropdown menu.
+**/
+function hideOptions() {
+	document.getElementById("dropdown").style.display='none';
+}
+
 //kleuren in disign keuze
+//legenda
+//headers en commends
 
 function drawGraph(data){
+	d3.selectAll("g").remove();
 	console.log(data);
 	
-	var svg = d3.select("svg"),
-		margin = {top: 50, right: 50, bottom: 50, left: 50},
-		width = +svg.attr("width") - margin.left - margin.right,
-		height = +svg.attr("height") - margin.top - margin.bottom,
-		g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var svg = d3.selectAll("svg");
+	var margin = {top: 10, right: 50, bottom: 50, left: 50};
+	var width = +svg.attr("width") - margin.left - margin.right;
+	var height = +svg.attr("height") - margin.top - margin.bottom;
+	var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	var colours = { Bilt: "blue", Hoogeveen: "red", Vlissingen: "green"};
 	
 	var x = d3.time.scale()
-		.domain(d3.extent(data, function(d) { return d["\ufeffDate"]; }))
+		.domain(d3.extent(data, function(d) { return d.dateCopy; }))
 		.rangeRound([0, width]);
 	
 	var y = d3.scale.linear()
@@ -37,22 +59,22 @@ function drawGraph(data){
 		
 	// Define the line
 	var BiltLine = d3.svg.line()
-		.x(function(d) { return x(d["\ufeffDate"]); })
+		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Bilt/10); });
 	
 	
 	var HoogeveenLine = d3.svg.line()
-		.x(function(d) { return x(d["\ufeffDate"]); })
+		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Hoogeveen/10); });
 		
 	var VlissingenLine = d3.svg.line()
-		.x(function(d) { return x(d["\ufeffDate"]); })
+		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Vlissingen/10); });
 		
 	g.append("path")
 		.datum(data)
 		.attr("fill", "none")
-		.attr("stroke", "green")
+		.attr("stroke", colours.Bilt)
 		.attr("stroke-linejoin", "round")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-width", 1.5)
@@ -61,7 +83,7 @@ function drawGraph(data){
 	g.append("path")
 		.datum(data)
 		.attr("fill", "none")
-		.attr("stroke", "blue")
+		.attr("stroke", colours.Hoogeveen)
 		.attr("stroke-linejoin", "round")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-width", 1.5)
@@ -70,7 +92,7 @@ function drawGraph(data){
 	g.append("path")
 		.datum(data)
 		.attr("fill", "none")
-		.attr("stroke", "red")
+		.attr("stroke", colours.Vlissingen)
 		.attr("stroke-linejoin", "round")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-width", 1.5)
@@ -91,7 +113,7 @@ function drawGraph(data){
 			.attr("x", width / 2)
 			.attr("y", (margin.bottom / 4)*3 )
 			.style("text-anchor", "middle")
-			.text("X AXIS");
+			.text("Date");
 	
 	// draw the y axis
 	g.append("g")
@@ -103,7 +125,7 @@ function drawGraph(data){
 			.attr("x", -(height / 2))
 			.attr("y", -(margin.left / 2))
 			.style("text-anchor", "middle")
-			.text("Y AXIS");
+			.text("Temperature in Celcius");
 			
 	var crosshairLine = d3.svg.line()
 		.x(function(d) { return d.x; })
@@ -111,8 +133,7 @@ function drawGraph(data){
 		
 	
 	var mouseX = 100;
-	var mouseX2 = 300;
-	var mouseY = 100;
+	var mouseY = 200;
 	var crosshairMouseX = [{x: mouseX, y: 0}, {x: mouseX, y: height}];
 	var crosshairMouseY = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
 
@@ -122,13 +143,19 @@ function drawGraph(data){
 		.attr("fill", "none")
 		.attr("stroke", "black")
 		.attr("d", crosshairLine(crosshairMouseX));
-	crosshairGY = g.append("path")
+	crosshairGYBilt = g.append("path")
 		.attr("fill", "none")
-		.attr("stroke", "black")
+		.attr("stroke", colours.Bilt)
+		.attr("d", crosshairLine(crosshairMouseY));
+	crosshairGYHoogeveen = g.append("path")
+		.attr("fill", "none")
+		.attr("stroke", colours.Hoogeveen)
+		.attr("d", crosshairLine(crosshairMouseY));
+	crosshairGYVlissingen = g.append("path")
+		.attr("fill", "none")
+		.attr("stroke", colours.Vlissingen)
 		.attr("d", crosshairLine(crosshairMouseY));
 		
-	var bisectDate = d3.bisector(function(d) { console.log("hoi"); return d["/ufeffDate"]; }).right;
-	console.log(bisectDate);
 	
 	svg.on("mousemove", function() {
 		d3.selectAll(".information").remove()
@@ -149,29 +176,53 @@ function drawGraph(data){
 		index = getDataIndex(data, dateX);
 		
 		// get the x and y per location
-		xDate = 
+		xDate = x(data[index].dateCopy);
+		yBilt = y(data[index].Bilt / 10);
+		yHoogeveen = y(data[index].Hoogeveen / 10);
+		yVlissingen = y(data[index].Vlissingen / 10);
 		
 		// draw the crosshairs
-		crosshairMouseMove = [[{x: mouseX, y: 0}, {x: mouseX, y: height}],[{x: 0, y: mouseY}, {x: width, y: mouseY}]];
-		crosshairGX.attr("d", crosshairLine(crosshairMouseMove[0]));
-		crosshairGY.attr("d", crosshairLine(crosshairMouseMove[1]));
+		crosshairMouseX = [{x: xDate, y: 0}, {x: xDate, y: height}];
+		crosshairBilt = [{x: 0, y: yBilt}, {x: width, y: yBilt}];
+		crosshairHoogeveen = [{x: 0, y: yHoogeveen}, {x: width, y: yHoogeveen}];
+		crosshairVlissingen = [{x: 0, y: yVlissingen}, {x: width, y: yVlissingen}];
+		
+		crosshairGX.attr("d", crosshairLine(crosshairMouseX));
+		crosshairGYBilt.attr("d", crosshairLine(crosshairBilt));
+		crosshairGYHoogeveen.attr("d", crosshairLine(crosshairHoogeveen));
+		crosshairGYVlissingen.attr("d", crosshairLine(crosshairVlissingen));
 		
 		// add text to the margin
 		g.append("text")
 			.attr("class", "information")
-			.attr("x", coordinates[0])
-			.attr("y", coordinates[1])
-			.text("hey");
+			.attr("x", mouseX + 10)
+			.attr("y", mouseY + 30)
+			.text("Temperatures:");
+		g.append("text")
+			.attr("class", "information")
+			.attr("x", mouseX + 10)
+			.attr("y", mouseY + 50)
+			.text("Bilt : " + data[index].Bilt / 10);
+		g.append("text")
+			.attr("class", "information")
+			.attr("x", mouseX + 10)
+			.attr("y", mouseY + 65)
+			.text("Hoogeveen : " + data[index].Hoogeveen / 10);
+		g.append("text")
+			.attr("class", "information")
+			.attr("x", mouseX + 10)
+			.attr("y", mouseY + 80)
+			.text("Vlissingen : " + data[index].Vlissingen / 10);
 
 		});
 		
 }
 
 function getDataIndex(data, date){
-	var results = [Math.abs(data[0]["randomDate"].getTime() - date.getTime()), 0] 
+	var results = [Math.abs(data[0].dateCopy.getTime() - date.getTime()), 0] 
 	for (var i = 0; i < data.length; i++){
-		if (Math.abs(data[i]["randomDate"].getTime() - date.getTime()) < results[0]){
-			results = [Math.abs(data[i]["randomDate"].getTime() - date.getTime()), i]
+		if (Math.abs(data[i].dateCopy.getTime() - date.getTime()) < results[0]){
+			results = [Math.abs(data[i].dateCopy.getTime() - date.getTime()), i]
 			}
 		}
 	return results[1];
