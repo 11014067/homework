@@ -1,7 +1,3 @@
-\**
-*
-* HEADER
-**\
 
 function getData(year){
 		
