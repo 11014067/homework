@@ -35,33 +35,36 @@ function hideOptions() {
 //kleuren in disign keuze
 //legenda
 //headers en commends
+//index
+//nul lijn
 
 function drawGraph(data){
+	// remove the old graph if there
 	d3.selectAll("g").remove();
-	console.log(data);
 	
+	// create a g for the graph
 	var svg = d3.selectAll("svg");
-	var margin = {top: 10, right: 50, bottom: 50, left: 50};
+	var margin = {top: 10, right: 600, bottom: 50, left: 50};
 	var width = +svg.attr("width") - margin.left - margin.right;
 	var height = +svg.attr("height") - margin.top - margin.bottom;
 	var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
-	var colours = { Bilt: "blue", Hoogeveen: "red", Vlissingen: "green"};
+	// get the colours
+	var colours = { Bilt: "#00009e", Hoogeveen: "#90009e", Vlissingen: "#F0009e"};
 	
+	// get the axis scales
 	var x = d3.time.scale()
 		.domain(d3.extent(data, function(d) { return d.dateCopy; }))
 		.rangeRound([0, width]);
-	
 	var y = d3.scale.linear()
-		.domain([d3.min(data, function(d) { return Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10; }),
-			d3.max(data, function(d) { return Math.max(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10; })])
+		.domain([d3.min(data, function(d) { return (Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) - 2; }),
+			d3.max(data, function(d) { return (Math.max(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) + 2; })])
 		.rangeRound([height, 0]);
-		
-	// Define the line
+	
+	// define the line function for each city
 	var BiltLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Bilt/10); });
-	
 	
 	var HoogeveenLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
@@ -70,7 +73,8 @@ function drawGraph(data){
 	var VlissingenLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Vlissingen/10); });
-		
+	
+	// draw a line for each city
 	g.append("path")
 		.datum(data)
 		.attr("fill", "none")
@@ -99,7 +103,7 @@ function drawGraph(data){
 		.attr("d", VlissingenLine(data));
 	
 	
-	// get the axis
+	// get the axis functions
 	var xAxis = d3.svg.axis().scale(x).orient("bottom");
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 	
@@ -126,39 +130,43 @@ function drawGraph(data){
 			.attr("y", -(margin.left / 2))
 			.style("text-anchor", "middle")
 			.text("Temperature in Celcius");
-			
+	
+	// get the crosshair line function
 	var crosshairLine = d3.svg.line()
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
 		
-	
+	// initiate the crosshairs
 	var mouseX = 100;
-	var mouseY = 200;
+	var mouseY = 400;
 	var crosshairMouseX = [{x: mouseX, y: 0}, {x: mouseX, y: height}];
-	var crosshairMouseY = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
+	var crosshairBilt = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
+	var crosshairHoogeveen = [{x: 0, y: mouseY + 5}, {x: width, y: mouseY + 5}];
+	var crosshairVlissingen = [{x: 0, y: mouseY + 10}, {x: width, y: mouseY + 10}];
 
 	
-	// crosshairs ---Should be mousemove over whole thing
-	crosshairGX = g.append("path")
+	// crosshairs
+	var crosshairGX = g.append("path")
 		.attr("fill", "none")
 		.attr("stroke", "black")
 		.attr("d", crosshairLine(crosshairMouseX));
-	crosshairGYBilt = g.append("path")
+	var crosshairGYBilt = g.append("path")
 		.attr("fill", "none")
 		.attr("stroke", colours.Bilt)
-		.attr("d", crosshairLine(crosshairMouseY));
-	crosshairGYHoogeveen = g.append("path")
+		.attr("d", crosshairLine(crosshairBilt));
+	var crosshairGYHoogeveen = g.append("path")
 		.attr("fill", "none")
 		.attr("stroke", colours.Hoogeveen)
-		.attr("d", crosshairLine(crosshairMouseY));
-	crosshairGYVlissingen = g.append("path")
+		.attr("d", crosshairLine(crosshairHoogeveen));
+	var crosshairGYVlissingen = g.append("path")
 		.attr("fill", "none")
 		.attr("stroke", colours.Vlissingen)
-		.attr("d", crosshairLine(crosshairMouseY));
+		.attr("d", crosshairLine(crosshairVlissingen));
 		
-	
+	// show crosshairs and information
 	svg.on("mousemove", function() {
 		d3.selectAll(".information").remove()
+		d3.selectAll(".background").remove()
 		var coordinates = d3.mouse(this);
 		
 		// change the coordinates to match the mouse in the graph
@@ -173,47 +181,69 @@ function drawGraph(data){
 		
 		// get the date at the mousepoint
 		var dateX = x.invert(mouseX);
-		index = getDataIndex(data, dateX);
+		var index = getDataIndex(data, dateX);
 		
 		// get the x and y per location
-		xDate = x(data[index].dateCopy);
-		yBilt = y(data[index].Bilt / 10);
-		yHoogeveen = y(data[index].Hoogeveen / 10);
-		yVlissingen = y(data[index].Vlissingen / 10);
+		var xDate = x(data[index].dateCopy);
+		var yBilt = y(data[index].Bilt / 10);
+		var yHoogeveen = y(data[index].Hoogeveen / 10);
+		var yVlissingen = y(data[index].Vlissingen / 10);
 		
-		// draw the crosshairs
+		// coordinate the crosshairs
 		crosshairMouseX = [{x: xDate, y: 0}, {x: xDate, y: height}];
 		crosshairBilt = [{x: 0, y: yBilt}, {x: width, y: yBilt}];
 		crosshairHoogeveen = [{x: 0, y: yHoogeveen}, {x: width, y: yHoogeveen}];
 		crosshairVlissingen = [{x: 0, y: yVlissingen}, {x: width, y: yVlissingen}];
 		
+		// draw the crosshair
 		crosshairGX.attr("d", crosshairLine(crosshairMouseX));
 		crosshairGYBilt.attr("d", crosshairLine(crosshairBilt));
 		crosshairGYHoogeveen.attr("d", crosshairLine(crosshairHoogeveen));
 		crosshairGYVlissingen.attr("d", crosshairLine(crosshairVlissingen));
 		
-		// add text to the margin
+		// position the information
+		if (mouseX < (width / 5)){
+			placeX = mouseX + 10
+			placeY = margin.top + 30
+			}
+		else if (mouseX > (width - (width / 5))){
+			placeX = mouseX - 165
+			placeY = margin.top + 30
+			}
+		else {
+			placeX = mouseX + 10
+			placeY = height - 70
+			}
+		
+		// add the information
+		g.append("rect")
+			.attr("class", "background")
+			.attr("x", placeX - 5)
+			.attr("y", placeY - 15)
+			.attr("width", 160)
+			.attr("height", 70)
+			.attr("fill", "white")
+			.attr("stroke", "black");
 		g.append("text")
 			.attr("class", "information")
-			.attr("x", mouseX + 10)
-			.attr("y", mouseY + 30)
-			.text("Temperatures:");
+			.attr("x", placeX)
+			.attr("y", placeY)
+			.text("Temperature on " + data[index].dateCopy.getDate() + "-" + (data[index].dateCopy.getMonth() + 1));
 		g.append("text")
 			.attr("class", "information")
-			.attr("x", mouseX + 10)
-			.attr("y", mouseY + 50)
+			.attr("x", placeX + 5)
+			.attr("y", placeY + 20)
 			.text("Bilt : " + data[index].Bilt / 10);
 		g.append("text")
 			.attr("class", "information")
-			.attr("x", mouseX + 10)
-			.attr("y", mouseY + 65)
+			.attr("x", placeX + 5)
+			.attr("y", placeY + 35)
 			.text("Hoogeveen : " + data[index].Hoogeveen / 10);
 		g.append("text")
 			.attr("class", "information")
-			.attr("x", mouseX + 10)
-			.attr("y", mouseY + 80)
+			.attr("x", placeX + 5)
+			.attr("y", placeY + 50)
 			.text("Vlissingen : " + data[index].Vlissingen / 10);
-
 		});
 		
 }
@@ -227,35 +257,3 @@ function getDataIndex(data, date){
 		}
 	return results[1];
 }
-//var crosshairG = g.append('g').style('display', 'none');
-    //            
-    //crosshairG.append('line')
-    //    .attr('id', 'crosshairX');
-    //crosshairG.append('line')
-    //    .attr('id', 'crosshairY');
-    //crosshairG.append('circle')
-    //    .attr('id', 'focusCircle')
-    //    .attr('r', 5);
-	//
-	//var mouse = d3.mouse(this);
-	//var closeSelector = d3.bisector(function(d) { return d[0]; }).left;
-    ////var mouseDate = xScale.invert(mouse[0]);
-    //var i = closeSelector(data, mouse[0]); // returns the index to the current data item
-    //
-    //var d0 = data[i - 1]
-    //var d1 = data[i];
-    //// work out which date value is closest to the mouse
-    //var d = mouseDate - d0[0] > d1[0] - mouseDate ? d1 : d0;
-    //
-    //var xCoor = x(d[0]);
-    //var yCoor = y(d[1]);
-    //
-    //focus.select('#focusCircle')
-    //    .attr('cx', xCoor)
-    //    .attr('cy', yCoor);
-    //focus.select('#focusLineX')
-    //    .attr('x1', xCoor).attr('y1', yScale(yDomain[0]))
-    //    .attr('x2', xCoor).attr('y2', yScale(yDomain[1]));
-    //focus.select('#focusLineY')
-    //    .attr('x1', xScale(xDomain[0])).attr('y1', y)
-    //    .attr('x2', xScale(xDomain[1])).attr('y2', y);
