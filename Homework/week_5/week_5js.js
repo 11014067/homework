@@ -1,60 +1,61 @@
-\**
+/**
+* Name: Sanne Oud 
+* Student number: 11014067
+* Data processing
 *
-* HEADER
-**\
+* This script makes a line graph of the temperature in the Netherlands with crosshairs for clairity.
+* Data is from: "http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi"
+**/
 
 function getData(year){
-		
+	// get the date format
 	var parseDate = d3.time.format("%d-%m-%y").parse;
+	
+	// get the name of the datafile to download and write the title
 	jsonName = "week_5csv" + year + ".json"
 	d3.select(".title").text("The temperature at De Bilt, Hoogeveen and Vlissingen in the year " + year + 
 		" in degrees Celcius")
+		
 	// get the json data via d3
 	d3.json(jsonName, function(error, data) {
 		if (error) throw error;
+		
+		// get the data in the wanted format
 		data.forEach(function(d) {
 			d.Bilt = +d.Bilt;
 			d.Hoogeveen = +d.Hoogeveen;
 			d.Vlissingen = +d.Vlissingen;
-			d.dateCopy = d["\ufeffDate"] = parseDate(d["\ufeffDate"]);
+			d.dateCopy = parseDate(d["\ufeffDate"]);
 			});
 		drawGraph(data);
 	});
 }
 
-/**
-* If this function is called, drop down the dropdown menu.
-**/
-function showOptions() {
-    document.getElementById("dropdown").style.display='block';
-}
-
-/**
-* If this function is called, hide the dropdown menu.
-**/
-function hideOptions() {
-	document.getElementById("dropdown").style.display='none';
-}
-
+// regellengte
+// ccs stylesheet invoegen.
+// tekst sansif??
 //kleuren in disign keuze
-//legenda
 //headers en commends
-//index
-//nul lijn
 
+/**
+* Draw the graph of the temperature in a year with crosshairs for each city (De Bilt, Hoogeveen and Vlissingen).
+**/
 function drawGraph(data){
 	// remove the old graph if there
 	d3.selectAll("g").remove();
 	
 	// create a g for the graph
 	var svg = d3.selectAll("svg");
-	var margin = {top: 10, right: 600, bottom: 50, left: 50};
+	var margin = {top: 10, right: 300, bottom: 50, left: 60};
 	var width = +svg.attr("width") - margin.left - margin.right;
 	var height = +svg.attr("height") - margin.top - margin.bottom;
 	var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
 	// get the colours
-	var colours = { Bilt: "#00009e", Hoogeveen: "#90009e", Vlissingen: "#F0009e"};
+	var colours = { Bilt: "#ef9815", Hoogeveen: "#0068cc", Vlissingen: "#919191"};
+	
+	// draw the legend
+	getLegend(width, height, margin, colours);
 	
 	// get the axis scales
 	var x = d3.time.scale()
@@ -121,7 +122,7 @@ function drawGraph(data){
 			.attr("x", width / 2)
 			.attr("y", (margin.bottom / 4)*3 )
 			.style("text-anchor", "middle")
-			.text("Date");
+			.text("Date in months");
 	
 	// draw the y axis
 	g.append("g")
@@ -141,12 +142,12 @@ function drawGraph(data){
 		.y(function(d) { return d.y; });
 		
 	// initiate the crosshairs
-	var mouseX = 100;
-	var mouseY = 400;
+	var mouseX = margin.left;
+	var mouseY = y(0);
 	var crosshairMouseX = [{x: mouseX, y: 0}, {x: mouseX, y: height}];
-	var crosshairBilt = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
-	var crosshairHoogeveen = [{x: 0, y: mouseY + 5}, {x: width, y: mouseY + 5}];
-	var crosshairVlissingen = [{x: 0, y: mouseY + 10}, {x: width, y: mouseY + 10}];
+	var crosshairBilt = [{x: 0, y: mouseY - 5}, {x: width, y: mouseY - 5}];
+	var crosshairHoogeveen = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
+	var crosshairVlissingen = [{x: 0, y: mouseY + 5}, {x: width, y: mouseY + 5}];
 
 	
 	// crosshairs
@@ -219,7 +220,7 @@ function drawGraph(data){
 			placeY = height - 70
 			}
 		
-		// add the information
+		// add the information block to the crosshair
 		g.append("rect")
 			.attr("class", "background")
 			.attr("x", placeX - 5)
@@ -227,7 +228,11 @@ function drawGraph(data){
 			.attr("width", 160)
 			.attr("height", 70)
 			.attr("fill", "white")
-			.attr("stroke", "black");
+			.attr("stroke", "black")
+			.attr("rx", 10)
+			.attr("ry", 10);
+			
+		// add text to the information block
 		g.append("text")
 			.attr("class", "information")
 			.attr("x", placeX)
@@ -252,6 +257,101 @@ function drawGraph(data){
 		
 }
 
+/**
+* Draw a legend to fit the dataset.
+**/
+function getLegend(width, height, margin, colours){
+	// get the coordinates for the legend and its content
+	var legendX = width + margin.left + 20;
+	var legendY = margin.top + 30;
+	var legendWidth = margin.right - 40;
+	var legendHeight = 	height - 60;
+	var legendBorder = 20;
+	var colourWidth = legendWidth/6;
+	var infoWidth = legendWidth - colourWidth - (legendBorder * 3);
+			
+	// get all the different key's
+	var keyList = Object.keys(colours);
+	var infoHeight = ((legendHeight - 80 - (legendBorder * 2) )
+		/ keyList.length) - 20;
+	
+	// create a y coordinate scale for the legend
+	var legendYScale = d3.scale.linear()
+		.range([legendY + 80 + legendBorder, 
+			legendY + legendHeight - legendBorder])
+		.domain([0, keyList.length]);
+		
+	// draw the legend box
+	var svg = d3.selectAll(".plot")
+	var legend = svg.append("g").attr("class", "legend");
+	legend.append("rect")
+		.attr("x", legendX)
+		.attr("y", legendY)
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.attr("stroke", "black")
+		.attr("fill", "white")
+		.attr("rx", 10)
+		.attr("ry", 10);
+	
+	// draw the coloured rectangles
+	legend.selectAll(".colour rect")
+		.data(keyList)
+		.enter()
+		.append("rect")
+			.attr("class", "colour rect")
+			.attr("x", legendX + legendBorder)
+			.attr("y", function(d,i) { return legendYScale(i); })
+			.attr("width", colourWidth)
+			.attr("height", infoHeight)
+			.attr("stroke", "black")
+			.attr("fill", function(d) { return colours[d]; })
+			.attr("rx", 10)
+			.attr("ry", 10);
+		
+	// draw the rectangles for the colour discription
+	legend.selectAll(".text rect")
+		.data(keyList)
+		.enter()
+		.append("rect")
+			.attr("class", "text rect")
+			.attr("x", legendX + colourWidth + (legendBorder * 2))
+			.attr("y", function(d,i) { return legendYScale(i); })
+			.attr("width", infoWidth)
+			.attr("height", infoHeight)
+			.attr("stroke", "black")
+			.attr("fill", "white")
+			.attr("rx", 10)
+			.attr("ry", 10);
+	
+	// write the legend title
+	legend.append("text")
+		.attr("class", "title")
+		.attr("x", legendX + (legendWidth / 2))
+		.attr("y", legendY + (legendBorder * 3))
+		.attr("fill", "black")
+		.attr("font-size", "25px")
+		.attr("text-anchor", "middle")
+		.text("Legend");
+		
+	// write the colour discription
+	legend.selectAll(".legenda")
+		.data(keyList)
+		.enter()
+		.append("text")
+			.attr("class", "legenda")
+			.attr("x", legendX + colourWidth + (legendBorder * 2) + 10 )
+			.attr("y", function(d,i) {
+				return legendYScale(i) + infoHeight - 20; 
+				})
+			.attr("fill", "black")
+			.attr("font-size", "15px")
+			.text( function(d) { return d; });
+}
+
+/**
+* Get the index for the date in the dataset clossesed to the given date.
+**/
 function getDataIndex(data, date){
 	var results = [Math.abs(data[0].dateCopy.getTime() - date.getTime()), 0] 
 	for (var i = 0; i < data.length; i++){
@@ -260,4 +360,18 @@ function getDataIndex(data, date){
 			}
 		}
 	return results[1];
+}
+
+/**
+* If this function is called, drop down the dropdown menu.
+**/
+function showOptions() {
+    document.getElementById("dropdown").style.display='block';
+}
+
+/**
+* If this function is called, hide the dropdown menu.
+**/
+function hideOptions() {
+	document.getElementById("dropdown").style.display='none';
 }
