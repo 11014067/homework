@@ -9,6 +9,7 @@
 **/
 
 function getData(year) {
+	
 	// get the date format
 	var parseDate = d3.time.format("%d-%m-%y").parse;
 	
@@ -38,6 +39,7 @@ function getData(year) {
 * (De Bilt, Hoogeveen and Vlissingen).
 **/
 function drawGraph(data) {
+	
 	// remove the old graph if there
 	d3.selectAll("g").remove();
 	
@@ -73,11 +75,9 @@ function drawGraph(data) {
 	var BiltLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Bilt/10); });
-	
 	var HoogeveenLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Hoogeveen/10); });
-		
 	var VlissingenLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
 		.y(function(d) { return y(d.Vlissingen/10); });
@@ -91,7 +91,6 @@ function drawGraph(data) {
 		.attr("stroke-linecap", "round")
 		.attr("stroke-width", 1.5)
 		.attr("d", BiltLine(data));
-	
 	g.append("path")
 		.datum(data)
 		.attr("fill", "none")
@@ -100,7 +99,6 @@ function drawGraph(data) {
 		.attr("stroke-linecap", "round")
 		.attr("stroke-width", 1.5)
 		.attr("d", HoogeveenLine(data));
-	
 	g.append("path")
 		.datum(data)
 		.attr("fill", "none")
@@ -109,7 +107,6 @@ function drawGraph(data) {
 		.attr("stroke-linecap", "round")
 		.attr("stroke-width", 1.5)
 		.attr("d", VlissingenLine(data));
-	
 	
 	// get the axis functions
 	var xAxis = d3.svg.axis().scale(x).orient("bottom");
@@ -207,7 +204,7 @@ function drawGraph(data) {
 		crosshairGYHoogeveen.attr("d", crosshairLine(crosshairHoogeveen));
 		crosshairGYVlissingen.attr("d", crosshairLine(crosshairVlissingen));
 		
-		// position the information
+		// get the information position
 		if (mouseX < (width / 5)){
 			placeX = mouseX + 10
 			placeY = margin.top + 30
@@ -262,6 +259,7 @@ function drawGraph(data) {
 * Draw a legend to fit the dataset.
 **/
 function getLegend(width, height, margin, colours) {
+	
 	// get the coordinates for the legend and its content
 	var legendX = width + margin.left + 20;
 	var legendY = margin.top + 30;
@@ -350,6 +348,7 @@ function getLegend(width, height, margin, colours) {
 * The dataset date should be gettable with attribute dateCopy.
 **/
 function getDataIndex(data, date){
+	
 	// get the amount of miliseconds the data date on index 0 differs from the date
 	var results = [Math.abs(data[0].dateCopy.getTime() - date.getTime()), 0] 
 	
