@@ -34,8 +34,7 @@ function getData(year){
 // regellengte
 // ccs stylesheet invoegen.
 // tekst sansif??
-//kleuren in disign keuze
-//headers en commends
+// kleuren in disign keuze
 
 /**
 * Draw the graph of the temperature in a year with crosshairs for each city (De Bilt, Hoogeveen and Vlissingen).
@@ -121,7 +120,7 @@ function drawGraph(data){
 			.attr("class", "label")
 			.attr("x", width / 2)
 			.attr("y", (margin.bottom / 4)*3 )
-			.style("text-anchor", "middle")
+			.style("text-anchor", "start")
 			.text("Date in months");
 	
 	// draw the y axis
@@ -133,7 +132,6 @@ function drawGraph(data){
 			.attr("transform", "rotate(-90)")
 			.attr("x", -(height / 2))
 			.attr("y", -(margin.left / 2))
-			.style("text-anchor", "middle")
 			.text("Temperature in Celcius");
 	
 	// get the crosshair line function
@@ -225,7 +223,7 @@ function drawGraph(data){
 			.attr("class", "background")
 			.attr("x", placeX - 5)
 			.attr("y", placeY - 15)
-			.attr("width", 160)
+			.attr("width", 145)
 			.attr("height", 70)
 			.attr("fill", "white")
 			.attr("stroke", "black")
@@ -295,11 +293,11 @@ function getLegend(width, height, margin, colours){
 		.attr("ry", 10);
 	
 	// draw the coloured rectangles
-	legend.selectAll(".colour rect")
+	legend.selectAll(".discription rect")
 		.data(keyList)
 		.enter()
 		.append("rect")
-			.attr("class", "colour rect")
+			.attr("class", "discription rect")
 			.attr("x", legendX + legendBorder)
 			.attr("y", function(d,i) { return legendYScale(i); })
 			.attr("width", colourWidth)
@@ -310,11 +308,11 @@ function getLegend(width, height, margin, colours){
 			.attr("ry", 10);
 		
 	// draw the rectangles for the colour discription
-	legend.selectAll(".text rect")
+	legend.selectAll(".discription rect")
 		.data(keyList)
 		.enter()
 		.append("rect")
-			.attr("class", "text rect")
+			.attr("class", "discription rect")
 			.attr("x", legendX + colourWidth + (legendBorder * 2))
 			.attr("y", function(d,i) { return legendYScale(i); })
 			.attr("width", infoWidth)
@@ -326,7 +324,7 @@ function getLegend(width, height, margin, colours){
 	
 	// write the legend title
 	legend.append("text")
-		.attr("class", "title")
+		.attr("class", "legenda title")
 		.attr("x", legendX + (legendWidth / 2))
 		.attr("y", legendY + (legendBorder * 3))
 		.attr("fill", "black")
@@ -335,11 +333,11 @@ function getLegend(width, height, margin, colours){
 		.text("Legend");
 		
 	// write the colour discription
-	legend.selectAll(".legenda")
+	legend.selectAll(".legenda discription")
 		.data(keyList)
 		.enter()
 		.append("text")
-			.attr("class", "legenda")
+			.attr("class", "legenda discription")
 			.attr("x", legendX + colourWidth + (legendBorder * 2) + 10 )
 			.attr("y", function(d,i) {
 				return legendYScale(i) + infoHeight - 20; 
