@@ -85,27 +85,18 @@ function drawGraph(data) {
 	// draw a line for each city
 	g.append("path")
 		.datum(data)
-		.attr("fill", "none")
+		.attr("class", "dataLine")
 		.attr("stroke", colours.Bilt)
-		.attr("stroke-linejoin", "round")
-		.attr("stroke-linecap", "round")
-		.attr("stroke-width", 1.5)
 		.attr("d", BiltLine(data));
 	g.append("path")
 		.datum(data)
-		.attr("fill", "none")
+		.attr("class", "dataLine")
 		.attr("stroke", colours.Hoogeveen)
-		.attr("stroke-linejoin", "round")
-		.attr("stroke-linecap", "round")
-		.attr("stroke-width", 1.5)
 		.attr("d", HoogeveenLine(data));
 	g.append("path")
 		.datum(data)
-		.attr("fill", "none")
+		.attr("class", "dataLine")
 		.attr("stroke", colours.Vlissingen)
-		.attr("stroke-linejoin", "round")
-		.attr("stroke-linecap", "round")
-		.attr("stroke-width", 1.5)
 		.attr("d", VlissingenLine(data));
 	
 	// get the axis functions

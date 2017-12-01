@@ -3,6 +3,13 @@
 	shape-rendering: crispEdges;
 }
 
+.dataLine{
+	fill: none;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	stroke-width: 1.5;
+}
+
 .tick text{
 	fill: black;
 	stroke: none;
