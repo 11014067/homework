@@ -60,10 +60,12 @@ function drawGraph(data) {
 	// draw the legend
 	getLegend(width, height, margin, colours);
 	
-	// get the axis scales
+	// get the x-axis scale
 	var x = d3.time.scale()
 		.domain(d3.extent(data, function(d) { return d.dateCopy; }))
 		.rangeRound([0, width]);
+	
+	// get the y-axis scale with some room so the line does not hit the top or bottom of the plot
 	var y = d3.scale.linear()
 		.domain([d3.min(data, function(d) { 
 				return (Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) - 2; 
