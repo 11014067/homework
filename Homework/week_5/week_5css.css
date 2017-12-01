@@ -1,3 +1,11 @@
+/**
+* Name: Sanne Oud 
+* Student number: 11014067
+* Data processing
+*
+* This script holds the css for a line graph
+**/
+
 .dataLine{
 	fill: none;
 	stroke-linejoin: round;
@@ -27,7 +35,7 @@
 	stroke: none;
 	font-size: 12px;
 	font-family: verdana;
-	text-anchor: left;
+	text-align: left;
 }
 
 .label {
@@ -58,4 +66,20 @@
 	stroke: none;
 	font-size: 12px;
 	font-family: verdana;
+}
+
+.dropButton {
+	background-color: #dddddd; 
+	color: black;
+	border: 1px solid #000000;
+	border-radius: 4px;
+	font-family: verdana;
+	font-size: 16px;
+}
+
+.optionButton{
+	background-color: #ffffff; 
+	color: black;
+	font-family: verdana;
+	font-size: 14px;
 }

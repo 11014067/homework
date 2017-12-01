@@ -8,6 +8,9 @@
 * Data is from: "http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi"
 **/
 
+/**
+* Load the wanted json data file.
+**/
 function getData(year) {
 	
 	// get the date format
@@ -112,7 +115,6 @@ function drawGraph(data) {
 			.attr("class", "label")
 			.attr("x", width / 2)
 			.attr("y", (margin.bottom / 4)*3 )
-			.style("text-anchor", "start")
 			.text("Date in months");
 	
 	// draw the y axis

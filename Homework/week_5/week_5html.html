@@ -12,20 +12,20 @@ course: data processing
 	</head>
 	<body onload="getData('2000');">
 		<div class="dropdown">
-			<button onclick="showOptions();" class="dropbuton">Chose the year you want to see</button>
+			<button onclick="showOptions();" class="dropButton">Chose the year you want to see</button>
 			<div id="dropdown" class="dropdown-content" style="display:none">
-				<div><a name="2000"
+				<button class="optionButton"
 					onclick="getData('2000'), hideOptions();">
-					2000</a></div>
-				<div><a name="2005" 
+					2000</button>
+				<button class="optionButton" 
 					onclick="getData('2005'), hideOptions();">
-					2005</a></div>
-				<div><a name="2010" 
+					2005</button>
+				<button class="optionButton" 
 					onclick="getData('2010'), hideOptions();">
-					2010</a></div>
-				<div><a name="2015" 
+					2010</button>
+				<button class="optionButton" 
 					onclick="getData('2015'), hideOptions();">
-					2015</a></div>
+					2015</button>
 			</div>
 		</div>
 		<h2 class="title" style="text-align: center"></h2>
