@@ -28,7 +28,7 @@ function getData(year) {
 			d.Hoogeveen = +d.Hoogeveen;
 			d.Vlissingen = +d.Vlissingen;
 			d.dateCopy = parseDate(d["\ufeffDate"]);
-			});
+		});
 		drawGraph(data);
 	});
 }
@@ -62,11 +62,11 @@ function drawGraph(data) {
 	var y = d3.scale.linear()
 		.domain([d3.min(data, function(d) { 
 				return (Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) - 2; 
-				}),
+			}),
 			d3.max(data, function(d) { 
 				return (Math.max(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) + 2; 
-				})
-			])
+			})
+		])
 		.rangeRound([height, 0]);
 
 	// define the line function for each city
@@ -211,15 +211,15 @@ function drawGraph(data) {
 		if (mouseX < (width / 5)){
 			placeX = mouseX + 10
 			placeY = margin.top + 30
-			}
+		}
 		else if (mouseX > (width - (width / 5))){
 			placeX = mouseX - 165
 			placeY = margin.top + 30
-			}
+		}
 		else {
 			placeX = mouseX + 10
 			placeY = height - 70
-			}
+		}
 		
 		// add the information block to the crosshair
 		g.append("rect")
@@ -255,8 +255,7 @@ function drawGraph(data) {
 			.attr("x", placeX + 5)
 			.attr("y", placeY + 50)
 			.text("Vlissingen : " + data[index].Vlissingen / 10);
-		});
-		
+	});
 }
 
 /**
@@ -342,7 +341,7 @@ function getLegend(width, height, margin, colours) {
 			.attr("x", legendX + colourWidth + (legendBorder * 2) + 10 )
 			.attr("y", function(d,i) {
 				return legendYScale(i) + infoHeight - 20; 
-				})
+			})
 			.text( function(d) { return d; });
 }
 
@@ -358,8 +357,8 @@ function getDataIndex(data, date){
 	for (var i = 0; i < data.length; i++){
 		if (Math.abs(data[i].dateCopy.getTime() - date.getTime()) < results[0]) {
 			results = [Math.abs(data[i].dateCopy.getTime() - date.getTime()), i]
-			}
 		}
+	}
 		
 	// return the index of the closesed date
 	return results[1];
