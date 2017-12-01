@@ -1,21 +1,8 @@
-.tick line{
-	stroke: black;
-	shape-rendering: crispEdges;
-}
-
 .dataLine{
 	fill: none;
 	stroke-linejoin: round;
 	stroke-linecap: round;
 	stroke-width: 1.5;
-}
-
-.tick text{
-	fill: black;
-	stroke: none;
-	font-size: 12px;
-	font-family: verdana;
-	text-anchor: left;
 }
 
 .x-axis path{
@@ -28,6 +15,19 @@
 	fill: none;
 	stroke: black;
 	shape-rendering: crispEdges;
+}
+
+.tick line{
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.tick text{
+	fill: black;
+	stroke: none;
+	font-size: 12px;
+	font-family: verdana;
+	text-anchor: left;
 }
 
 .label {
