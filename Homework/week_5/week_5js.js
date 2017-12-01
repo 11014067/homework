@@ -2,7 +2,7 @@
 * Name: Sanne Oud 
 * Student number: 11014067
 * Data processing
-* *******
+*
 * This script makes a line graph of the temperature in the Netherlands with 
 * crosshairs for clairity.
 * Data is from: "http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi"
