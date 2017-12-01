@@ -33,10 +33,6 @@ function getData(year) {
 	});
 }
 
-
-// regellengte
-// kleuren in disign keuze
-
 /**
 * Draw the graph of the temperature in a year with crosshairs for each city 
 * (De Bilt, Hoogeveen and Vlissingen).
