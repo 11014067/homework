@@ -3,18 +3,20 @@
 * Student number: 11014067
 * Data processing
 *
-* This script makes a line graph of the temperature in the Netherlands with crosshairs for clairity.
+* This script makes a line graph of the temperature in the Netherlands with 
+* crosshairs for clairity.
 * Data is from: "http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi"
 **/
 
-function getData(year){
+function getData(year) {
 	// get the date format
 	var parseDate = d3.time.format("%d-%m-%y").parse;
 	
 	// get the name of the datafile to download and write the title
 	jsonName = "week_5csv" + year + ".json"
-	d3.select(".title").text("The temperature at De Bilt, Hoogeveen and Vlissingen in the year " + year + 
-		" in degrees Celcius")
+	d3.select(".title")
+		.text("The temperature at De Bilt, Hoogeveen and Vlissingen" +
+			"in the year " + year + " in degrees Celcius")		
 		
 	// get the json data via d3
 	d3.json(jsonName, function(error, data) {
@@ -31,27 +33,28 @@ function getData(year){
 	});
 }
 
+
 // regellengte
-// ccs stylesheet invoegen.
-// tekst sansif??
 // kleuren in disign keuze
 
 /**
-* Draw the graph of the temperature in a year with crosshairs for each city (De Bilt, Hoogeveen and Vlissingen).
+* Draw the graph of the temperature in a year with crosshairs for each city 
+* (De Bilt, Hoogeveen and Vlissingen).
 **/
-function drawGraph(data){
+function drawGraph(data) {
 	// remove the old graph if there
 	d3.selectAll("g").remove();
 	
 	// create a g for the graph
 	var svg = d3.selectAll("svg");
 	var margin = {top: 10, right: 300, bottom: 50, left: 60};
-	var width = +svg.attr("width") - margin.left - margin.right;
-	var height = +svg.attr("height") - margin.top - margin.bottom;
-	var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var width = svg.attr("width") - margin.left - margin.right;
+	var height = svg.attr("height") - margin.top - margin.bottom;
+	var g = svg.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
 	// get the colours
-	var colours = { Bilt: "#ef9815", Hoogeveen: "#0068cc", Vlissingen: "#919191"};
+	var colours = {Bilt: "#ef9815", Hoogeveen: "#0068cc", Vlissingen: "#919191"};
 	
 	// draw the legend
 	getLegend(width, height, margin, colours);
@@ -61,10 +64,15 @@ function drawGraph(data){
 		.domain(d3.extent(data, function(d) { return d.dateCopy; }))
 		.rangeRound([0, width]);
 	var y = d3.scale.linear()
-		.domain([d3.min(data, function(d) { return (Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) - 2; }),
-			d3.max(data, function(d) { return (Math.max(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) + 2; })])
+		.domain([d3.min(data, function(d) { 
+				return (Math.min(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) - 2; 
+				}),
+			d3.max(data, function(d) { 
+				return (Math.max(d.Bilt, d.Hoogeveen, d.Vlissingen) / 10) + 2; 
+				})
+			])
 		.rangeRound([height, 0]);
-	
+
 	// define the line function for each city
 	var BiltLine = d3.svg.line()
 		.x(function(d) { return x(d.dateCopy); })
@@ -146,7 +154,6 @@ function drawGraph(data){
 	var crosshairBilt = [{x: 0, y: mouseY - 5}, {x: width, y: mouseY - 5}];
 	var crosshairHoogeveen = [{x: 0, y: mouseY}, {x: width, y: mouseY}];
 	var crosshairVlissingen = [{x: 0, y: mouseY + 5}, {x: width, y: mouseY + 5}];
-
 	
 	// crosshairs
 	var crosshairGX = g.append("path")
@@ -235,7 +242,8 @@ function drawGraph(data){
 			.attr("class", "information")
 			.attr("x", placeX)
 			.attr("y", placeY)
-			.text("Temperature on " + data[index].dateCopy.getDate() + "-" + (data[index].dateCopy.getMonth() + 1));
+			.text("Temperature on " + data[index].dateCopy.getDate() +
+				"-" + (data[index].dateCopy.getMonth() + 1));
 		g.append("text")
 			.attr("class", "information")
 			.attr("x", placeX + 5)
@@ -258,7 +266,7 @@ function drawGraph(data){
 /**
 * Draw a legend to fit the dataset.
 **/
-function getLegend(width, height, margin, colours){
+function getLegend(width, height, margin, colours) {
 	// get the coordinates for the legend and its content
 	var legendX = width + margin.left + 20;
 	var legendY = margin.top + 30;
@@ -293,11 +301,11 @@ function getLegend(width, height, margin, colours){
 		.attr("ry", 10);
 	
 	// draw the coloured rectangles
-	legend.selectAll(".discription rect")
+	legend.selectAll(".legenda-rectC")
 		.data(keyList)
 		.enter()
 		.append("rect")
-			.attr("class", "discription rect")
+			.attr("class", "legenda-rectC")
 			.attr("x", legendX + legendBorder)
 			.attr("y", function(d,i) { return legendYScale(i); })
 			.attr("width", colourWidth)
@@ -308,11 +316,11 @@ function getLegend(width, height, margin, colours){
 			.attr("ry", 10);
 		
 	// draw the rectangles for the colour discription
-	legend.selectAll(".discription rect")
+	legend.selectAll(".legenda-rectT")
 		.data(keyList)
 		.enter()
 		.append("rect")
-			.attr("class", "discription rect")
+			.attr("class", "legenda-rectT")
 			.attr("x", legendX + colourWidth + (legendBorder * 2))
 			.attr("y", function(d,i) { return legendYScale(i); })
 			.attr("width", infoWidth)
@@ -324,39 +332,40 @@ function getLegend(width, height, margin, colours){
 	
 	// write the legend title
 	legend.append("text")
-		.attr("class", "legenda title")
+		.attr("class", "legenda-title")
 		.attr("x", legendX + (legendWidth / 2))
 		.attr("y", legendY + (legendBorder * 3))
-		.attr("fill", "black")
-		.attr("font-size", "25px")
-		.attr("text-anchor", "middle")
 		.text("Legend");
 		
 	// write the colour discription
-	legend.selectAll(".legenda discription")
+	legend.selectAll(".legenda-discription")
 		.data(keyList)
 		.enter()
 		.append("text")
-			.attr("class", "legenda discription")
+			.attr("class", "legenda-discription")
 			.attr("x", legendX + colourWidth + (legendBorder * 2) + 10 )
 			.attr("y", function(d,i) {
 				return legendYScale(i) + infoHeight - 20; 
 				})
-			.attr("fill", "black")
-			.attr("font-size", "15px")
 			.text( function(d) { return d; });
 }
 
 /**
 * Get the index for the date in the dataset clossesed to the given date.
+* The dataset date should be gettable with attribute dateCopy.
 **/
 function getDataIndex(data, date){
+	// get the amount of miliseconds the data date on index 0 differs from the date
 	var results = [Math.abs(data[0].dateCopy.getTime() - date.getTime()), 0] 
+	
+	// go through the data to find the closesed date and save the index
 	for (var i = 0; i < data.length; i++){
-		if (Math.abs(data[i].dateCopy.getTime() - date.getTime()) < results[0]){
+		if (Math.abs(data[i].dateCopy.getTime() - date.getTime()) < results[0]) {
 			results = [Math.abs(data[i].dateCopy.getTime() - date.getTime()), i]
 			}
 		}
+		
+	// return the index of the closesed date
 	return results[1];
 }
 

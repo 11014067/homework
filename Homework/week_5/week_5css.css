@@ -31,11 +31,19 @@
 	text-anchor: middle;
 }
 
-.legend {
+.legenda-discription {
 	fill: black;
 	stroke: none;
-	font-size: 12px;
+	font-size: 15px;
 	font-family: verdana;
+}
+
+.legenda-title {
+	fill: black;
+	stroke: none;
+	font-size: 25px;
+	font-family: verdana;
+	text-anchor: middle;
 }
 
 .information {
