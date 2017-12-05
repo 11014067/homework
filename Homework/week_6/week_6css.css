@@ -1,0 +1,77 @@
+/**
+* Name: Sanne Oud 
+* Student number: 11014067
+* Data processing
+*
+* This script holds the css for a line graph
+**/
+
+.title{
+	fill: black;
+	stroke: none;
+	font-size: 25px;
+	font-family: verdana;
+	text-align: center;
+}
+
+.dataLine{
+	fill: none;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	stroke-width: 1.5;
+}
+
+.x-axis path{
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.y-axis path{
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.tick line{
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.tick text{
+	fill: black;
+	stroke: none;
+	font-size: 12px;
+	font-family: verdana;
+	text-align: left;
+}
+
+.label {
+	fill: black;
+	stroke: none;
+	font-size: 14px;
+	font-family: verdana;
+	text-anchor: middle;
+}
+
+.legenda-discription {
+	fill: black;
+	stroke: none;
+	font-size: 15px;
+	font-family: verdana;
+}
+
+.legenda-title {
+	fill: black;
+	stroke: none;
+	font-size: 25px;
+	font-family: verdana;
+	text-anchor: middle;
+}
+
+.information {
+	fill: black;
+	stroke: none;
+	font-size: 12px;
+	font-family: verdana;
+}
