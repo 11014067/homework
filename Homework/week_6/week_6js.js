@@ -35,7 +35,7 @@ function checkData(error, countries, GNIdata, HPIdata){
 	});
 	
 	// start making the GNI plot
-	drawMap(countries, GNIdata);
+	drawMap(countries, GNIdata, "mapSVG");
 	
 	// get the HPI data in the wanted format
 	HPIdata.forEach(function(d) {
@@ -48,7 +48,7 @@ function checkData(error, countries, GNIdata, HPIdata){
 	});
 	
 	// start making th HPI plot
-	drawPlot(HPIdata, "Wellbeing", "Ecological footprint");
+	drawPlot(HPIdata, "Wellbeing", "HPI", "plotSVG");
 	
 	d3.select(".title").text("The GNI and HPI(Happy Planet Index) in 2016")
 }
@@ -56,28 +56,37 @@ function checkData(error, countries, GNIdata, HPIdata){
 /**
 * Draws a map coloured to the data.
 **/
-function drawMap(countries, GNIdata){
+function drawMap(countries, GNIdata, svgName){
 	d3.select(".mapTitle").text("GNI(Gross national income) per capita at PPP (purchasing power parity) in USD");
 	
-	minimumGNI = d3.min(GNIdata, function (d) { return d.Income; });
-	maximumGNI = d3.max(GNIdata, function (d) { return d.Income; });
+	maximumGNI = d3.max(GNIdata, function (d) { 
+		return Math.round(d.Income/10000)*10000; 
+	});
 	
 	var format = d3.format(",");
 	
 	// get the svg and add g for the map
-	mapSVG = d3.selectAll(".mapSVG")
+	mapSVG = d3.selectAll("." + svgName)
 		.append('g')
 		.attr('class', 'map');			
 
 	// get the margins
-	var margin = {top: 0, right: 200, bottom: 0, left: 0},
+	var margin = {top: 0, right: 300, bottom: 0, left: 0},
 		width = +d3.selectAll(".mapSVG").attr("width") - margin.left - margin.right,
 		height = +d3.selectAll(".mapSVG").attr("height") - margin.top - margin.bottom;
 	
 	// colour scale
 	var colour = d3.scale.linear()
-		.domain([minimumGNI, maximumGNI])
-		.range(["rgb(198,219,239)", "rgb(8,81,156)"]);
+		.domain([0, maximumGNI])
+		.range(["#C6DBEF", "#08519C"]);
+	
+	// unhardcode the legend colours
+	
+	// colours for the legenda
+	var legendColours = { "0 GNI": colour(0), "20000 GNI": colour(20000), 
+		"40000 GNI": colour(40000), "60000 GNI": colour(60000), 
+		"80000 GNI": colour(80000), "unknown": colour(undefined)
+	};
 	
 	// start a path
 	var path = d3.geo.path();
@@ -103,11 +112,6 @@ function drawMap(countries, GNIdata){
 				.attr("d", path)
 				.attr("class", function(d) { return d.properties.name; })
 				.style("fill", function(d) { return colour(populationById[d.properties.name]); })
-				.style("stroke", "white")
-				.style("stroke-width", 1.5)
-				.style("opacity",0.8)
-				.style("stroke","white")
-				.style("stroke-width", 0.3)
 				.on("mouseover", function(d) {
 					d3.select(this)
 						.style("opacity", 1)
@@ -120,8 +124,7 @@ function drawMap(countries, GNIdata){
 						.style("stroke", "white");
 				})
 				.on("click", function(d) {
-					countryClicked(d.properties.name, "circle")
-					console.log(d3.select(this))
+					countryClicked(d.properties.name, "circle");
 				})
 				.append("title")
 					.text( function(d) { return d.properties.name; });
@@ -132,12 +135,14 @@ function drawMap(countries, GNIdata){
        // .datum(topojson.mesh(data.features, function(a, b) { return a !== b; }))
 		.attr("class", "names")
 		.attr("d", path);
+		
+	getLegend(svgName, legendColours, width, height, margin);
 }
 
 /**
 * Draws a scatterplot. 
 **/
-function drawPlot(HPIdata, yName, xName){
+function drawPlot(HPIdata, yName, xName, svgName){
 	
 	// write the title
 	var yTitle = yName.toLowerCase();
@@ -151,10 +156,10 @@ function drawPlot(HPIdata, yName, xName){
 
 	// get all the coordinates for the canvas and the graph
 	var margin = {top: 10, right: 300, bottom: 100, left: 60};
-	var chartWidth = +d3.selectAll(".plotSVG").attr("width");
-	var chartHeight = +d3.selectAll(".plotSVG").attr("height");
-	var graphWidth = chartWidth - margin.left - margin.right;
-	var graphHeight = chartHeight - margin.top - margin.bottom;
+	var svgWidth = +d3.selectAll(".plotSVG").attr("width");
+	var svgHeight = +d3.selectAll(".plotSVG").attr("height");
+	var width = svgWidth - margin.left - margin.right;
+	var height = svgHeight - margin.top - margin.bottom;
 	
 	// get a colour for each region and one for unknown
 	var regionColours = {"Americas": "#A53431", "Asia Pacific": "#D73030",
@@ -164,15 +169,15 @@ function drawPlot(HPIdata, yName, xName){
 
 	// get the scales for the x axis, y axis and datapoint size
 	var x = d3.scale.linear()
-		.range([0, graphWidth])
+		.range([0, width])
 		.domain([0, d3.max(HPIdata, function(d) {
 			return (d[xAxisData] + 10 - (d[xAxisData] % 10));
-			})]);
+		})]);
 	var y = d3.scale.linear()
-		.range([graphHeight, 0])
+		.range([height, 0])
 		.domain([0, d3.max(HPIdata, function(d) { 
 			return (d[yAxisData] + 10 - (d[yAxisData] % 10)); 
-			})]);
+		})]);
 	var sizeScale = d3.scale.linear()
 		.range([2, 10])
 		.domain([d3.min(HPIdata, function(d) { return d["HPI"];}),
@@ -183,7 +188,7 @@ function drawPlot(HPIdata, yName, xName){
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 	
 	// start an svg for the plot
-	var svg = d3.select(".plotSVG")
+	var svg = d3.select("." + svgName)
 		.append("g")
 			.attr("transform", 
 				"translate(" + margin.left + "," + margin.top + ")");
@@ -191,24 +196,27 @@ function drawPlot(HPIdata, yName, xName){
 	// draw the x axis
 	svg.append("g")
 		.attr("class", "x-axis")
-		.attr("transform", "translate(0," + graphHeight + ")")
+		.attr("transform", "translate(0," + height + ")")
 		.call(xAxis)
 		.append("text")
 			.attr("class", "label")
-			.attr("x", graphWidth / 2)
+			.attr("x", width / 2)
 			.attr("y", margin.bottom / 2)
 			.style("text-anchor", "middle")
 			.text(function() {
 				if (xAxisData == "Life expectancy") {
 					return "Life expectancy in years";
-					}
+				}
 				else if (xAxisData == "Ecological footprint") {
 					return "Ecological footprint in gha per person";
-					}
+				}
+				else if (xAxisData == "HPI") {
+					return "The happy planet index";
+				}
 				else {
 					return "Error";
-					};
-				});
+				};
+			});
 	
 	// draw the y axis
 	svg.append("g")
@@ -217,20 +225,20 @@ function drawPlot(HPIdata, yName, xName){
 		.append("text")
 			.attr("class", "label")
 			.attr("transform", "rotate(-90)")
-			.attr("x", -(graphHeight / 2))
+			.attr("x", -(height / 2))
 			.attr("y", -(margin.left / 2))
 			.style("text-anchor", "middle")
 			.text(function() {
 				if (yAxisData == "Ecological footprint") {
 					return "Ecological footprint in gha per person";
-					}
+				}
 				else if(yAxisData == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
-					}
+				}
 				else {
 					return "Error";
-					};
-				});
+				};
+			});
 
 	// append a group for the datapoints
 	var svgplot = svg.append("g").attr("class", "plot");
@@ -257,39 +265,46 @@ function drawPlot(HPIdata, yName, xName){
 			.on("mouseover", function() {
 				d3.select(this)
 					.attr("fill-opacity", "0.6")
-					.style("stroke-width", ".3")
+					.style("stroke-width", ".3");
 			})
 			.on("mouseout", function() {
 				d3.select(this)
 					.attr("fill-opacity", "1")
 					.style("stroke-width", "1")
-					.style("stroke", "white")
+					.style("stroke", "white");
 			})
 			.on("click", function(d) {
-				countryClicked(d.Country, "path")
+				countryClicked(d.Country, "path");
 			})
 			.append("title")
-				.text( function(d) { return d.Country; });		
-	
+				.text( function(d) { return d.Country; });	
+		
+	getLegend(svgName, regionColours, width, height, margin);
+}
+
+
+function getLegend(svgName, infoColours, width, height, margin){	
+	var svg = d3.select("." + svgName);
+
 	// get the coordinates for the legend and its content
-	var legendX = graphWidth + 15;
+	var legendX = width + margin.left + 10;
 	var legendY = 0;
 	var legendWidth = margin.right - 50;
-	var legendHeight = 	graphHeight;
+	var legendHeight = 	height;
 	var colourWidth = legendWidth/6;
 	var legendBorder = 15;
 	var infoWidth = legendWidth - colourWidth - (legendBorder * 3);
 			
 	// get all the different regions
-	var regionList = Object.keys(regionColours);
-	var infoHeight = ((legendHeight - (legendBorder * 2) )
-		/ regionList.length) - 10;
+	var infoList = Object.keys(infoColours);
+	var infoHeight = ((legendHeight - (legendBorder * 3) )
+		/ infoList.length) - 10;
 	
 	// create a y coordinate scale for the legend
 	var legendYScale = d3.scale.linear()
-		.range([legendY + (legendBorder * 2), 
+		.range([legendY + (legendBorder * 3), 
 			legendY + legendHeight - legendBorder])
-		.domain([0, regionList.length]);
+		.domain([0, infoList.length]);
 	
 	// draw the legend box
 	var legend = svg.append("g").attr("class", "legend");
@@ -305,7 +320,7 @@ function drawPlot(HPIdata, yName, xName){
 	
 	// draw the coloured rectangles
 	legend.selectAll(".colour rect")
-		.data(regionList)
+		.data(infoList)
 		.enter()
 		.append("rect")
 			.attr("class", "colour rect")
@@ -314,13 +329,13 @@ function drawPlot(HPIdata, yName, xName){
 			.attr("width", colourWidth)
 			.attr("height", infoHeight)
 			.attr("stroke", "black")
-			.attr("fill", function(d) { return regionColours[d]; })
+			.attr("fill", function(d) { return infoColours[d]; })
 			.attr("rx", 10)
 			.attr("ry", 10);
 		
 	// draw the rectangles for the colour discription
 	legend.selectAll(".text rect")
-		.data(regionList)
+		.data(infoList)
 		.enter()
 		.append("rect")
 			.attr("class", "text rect")
@@ -337,7 +352,7 @@ function drawPlot(HPIdata, yName, xName){
 	legend.append("text")
 		.attr("class", "title")
 		.attr("x", legendX + (legendWidth / 2))
-		.attr("y", legendY + (legendBorder * 1.5))
+		.attr("y", legendY + (legendBorder * 2))
 		.attr("fill", "black")
 		.attr("font-size", "25px")
 		.attr("text-anchor", "middle")
@@ -345,22 +360,23 @@ function drawPlot(HPIdata, yName, xName){
 		
 	// write the colour discription
 	legend.selectAll(".legenda")
-		.data(regionList)
+		.data(infoList)
 		.enter()
 		.append("text")
 			.attr("class", "legenda")
 			.attr("x", legendX + colourWidth + (legendBorder * 2) + 10 )
 			.attr("y", function(d,i) {
 				return legendYScale(i) + infoHeight - 5; 
-				})
+			})
 			.attr("fill", "black")
-			.attr("font-size", "11px")
+			.attr("font-size", function() { 
+				{ return Math.round(infoHeight/2); }
+			})
 			.text( function(d) { return d; });
 }
 
 function countryClicked(countryName, formOfObject) {
-	console.log(countryName)
 	d3.selectAll("." + countryName)
 		.style("stroke-width", "2")
-		.style("stroke", "green")
+		.style("stroke", "green");
 }

@@ -6,6 +6,15 @@
 * This script holds the css for a line graph
 **/
 
+.countries{
+	stroke: white;
+	stroke-width: 1.5;
+	opacity: 0.8;
+	stroke: white;
+	stroke-width: 0.3;
+}
+
+
 .title{
 	fill: black;
 	stroke: none;
