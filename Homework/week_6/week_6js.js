@@ -11,6 +11,26 @@
 **/
 
 /**
+* Make some global variables so the plot can be changed without reloading the data.
+**/
+var GNIdata, HPIdata
+var yName = "Wellbeing"
+var xName = "HPI"
+
+/**
+* Change the axis on the plot.
+**/
+function changeAxis(axisName, axisDataName){
+	if (axisName == 'x'){
+		xName = axisDataName;
+	}
+	else if (axisName == 'y') {
+		yName = axisDataName;
+	};
+	drawPlot("plotSVG");
+}
+
+/**
 * Load the wanted csv data files.
 **/
 function getData() {
@@ -25,20 +45,21 @@ function getData() {
 /**
 * Get the data in the wanted format.
 **/
-function checkData(error, countries, GNIdata, HPIdata){
+function checkData(error, countries, GNIdataCheck, HPIdataCheck){
 	// throw an error if there
 	if (error) throw error;
 	
 	// get the GNI data in the wanted format
-	GNIdata.forEach(function(d) {
+	GNIdataCheck.forEach(function(d) {
 		d.Income = +d.Income;
 	});
+	GNIdata = GNIdataCheck;
 	
 	// start making the GNI plot
 	drawMap(countries, GNIdata, "mapSVG");
 	
 	// get the HPI data in the wanted format
-	HPIdata.forEach(function(d) {
+	HPIdataCheck.forEach(function(d) {
 		d.HPIRank = +d.HPIRank;
 		d["Life expectancy"] = +d["Life expectancy"];
 		d.Wellbeing = +d.Wellbeing;
@@ -46,11 +67,12 @@ function checkData(error, countries, GNIdata, HPIdata){
 		d["Ecological footprint"] = +d["Ecological footprint"];
 		d.HPI = +d.HPI;
 	});
+	HPIdata = HPIdataCheck;
 	
 	// start making th HPI plot
-	drawPlot(HPIdata, "Wellbeing", "HPI", "plotSVG");
+	drawPlot("plotSVG");
 	
-	d3.select(".title").text("The GNI and HPI(Happy Planet Index) in 2016")
+	d3.select(".title").text("The GNI and HPI in 2016")
 }
 
 /**
@@ -71,7 +93,7 @@ function drawMap(countries, GNIdata, svgName){
 		.attr('class', 'map');			
 
 	// get the margins
-	var margin = {top: 0, right: 300, bottom: 0, left: 0},
+	var margin = {top: 20, right: 300, bottom: 20, left: 0},
 		width = +d3.selectAll(".mapSVG").attr("width") - margin.left - margin.right,
 		height = +d3.selectAll(".mapSVG").attr("height") - margin.top - margin.bottom;
 	
@@ -114,12 +136,12 @@ function drawMap(countries, GNIdata, svgName){
 				.style("fill", function(d) { return colour(populationById[d.properties.name]); })
 				.on("mouseover", function(d) {
 					d3.select(this)
-						.style("opacity", 1)
+						.style("opacity", 0.8)
 						.style("stroke-width",3);
 				})
 				.on("mouseout", function(d) {
 					d3.select(this)
-						.style("opacity", 0.8)
+						.style("opacity", 1)
 						.style("stroke-width",0.3)
 						.style("stroke", "white");
 				})
@@ -127,7 +149,7 @@ function drawMap(countries, GNIdata, svgName){
 					countryClicked(d.properties.name, "circle");
 				})
 				.append("title")
-					.text( function(d) { return d.properties.name; });
+					.text( function(d) { return d.properties.name + ", GNI : " + populationById[d.properties.name]; });
 	
 	// add the names 
 	mapSVG.append("path")
@@ -142,11 +164,26 @@ function drawMap(countries, GNIdata, svgName){
 /**
 * Draws a scatterplot. 
 **/
-function drawPlot(HPIdata, yName, xName, svgName){
+function drawPlot(svgName){
+	d3.select("." + svgName + "2").remove();
 	
+	d3.select("." + svgName)
+		.append("svg")
+			.attr("class", svgName + 2);
+			
 	// write the title
-	var yTitle = yName.toLowerCase();
-	var xTitle = xName.toLowerCase();
+	if (xName == "HPI"){
+		var xTitle = xName;
+	}
+	else{
+		var xTitle = xName.toLowerCase();
+	};
+	if (yName == "HPI"){
+		var yTitle = yName;
+	}
+	else{
+		var yTitle = yName.toLowerCase();
+	};
 	d3.select(".plotTitle").text("The " + yTitle + " against the " + xTitle + 
 		" coloured by region");
 	
@@ -156,8 +193,8 @@ function drawPlot(HPIdata, yName, xName, svgName){
 
 	// get all the coordinates for the canvas and the graph
 	var margin = {top: 10, right: 300, bottom: 100, left: 60};
-	var svgWidth = +d3.selectAll(".plotSVG").attr("width");
-	var svgHeight = +d3.selectAll(".plotSVG").attr("height");
+	var svgWidth = +d3.selectAll("." + svgName).attr("width");
+	var svgHeight = +d3.selectAll("." + svgName).attr("height");
 	var width = svgWidth - margin.left - margin.right;
 	var height = svgHeight - margin.top - margin.bottom;
 	
@@ -178,17 +215,13 @@ function drawPlot(HPIdata, yName, xName, svgName){
 		.domain([0, d3.max(HPIdata, function(d) { 
 			return (d[yAxisData] + 10 - (d[yAxisData] % 10)); 
 		})]);
-	var sizeScale = d3.scale.linear()
-		.range([2, 10])
-		.domain([d3.min(HPIdata, function(d) { return d["HPI"];}),
-			d3.max(HPIdata, function(d) { return d["HPI"]; })]);
 	
 	// get the axis
 	var xAxis = d3.svg.axis().scale(x).orient("bottom");
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 	
 	// start an svg for the plot
-	var svg = d3.select("." + svgName)
+	var svg = d3.select("." + svgName + "2")
 		.append("g")
 			.attr("transform", 
 				"translate(" + margin.left + "," + margin.top + ")");
@@ -213,8 +246,11 @@ function drawPlot(HPIdata, yName, xName, svgName){
 				else if (xAxisData == "HPI") {
 					return "The happy planet index";
 				}
+				else if(xAxisData == "Wellbeing") {
+					return "Wellbeing on a scale from 0 to 10";
+				}
 				else {
-					return "Error";
+					return xAxisData;
 				};
 			});
 	
@@ -229,14 +265,20 @@ function drawPlot(HPIdata, yName, xName, svgName){
 			.attr("y", -(margin.left / 2))
 			.style("text-anchor", "middle")
 			.text(function() {
-				if (yAxisData == "Ecological footprint") {
+				if (yAxisData == "Life expectancy") {
+					return "Life expectancy in years";
+				}
+				else if (yAxisData == "Ecological footprint") {
 					return "Ecological footprint in gha per person";
+				}
+				else if (yAxisData == "HPI") {
+					return "The happy planet index";
 				}
 				else if(yAxisData == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
 				}
 				else {
-					return "Error";
+					return yAxisData;
 				};
 			});
 
@@ -244,7 +286,7 @@ function drawPlot(HPIdata, yName, xName, svgName){
 	var svgplot = svg.append("g").attr("class", "plot");
 		
 	// draw the datapoints
-	svgplot.selectAll(".datapoint")
+	svgplot.selectAll("circle")
 		.data(HPIdata)
 		.enter()
 		.append("circle")
@@ -252,8 +294,6 @@ function drawPlot(HPIdata, yName, xName, svgName){
 			.attr("r", 3)
 			.attr("cx", function(d) { return x(d[xAxisData]); })
 			.attr("cy", function(d) { return y(d[yAxisData]); })
-			.attr("stroke", "white")
-			.attr("stroke-width", "1")
 			.style("fill", function(d) { 
 				if (regionColours[d["Region"]]){ 
 					return regionColours[d.Region];
@@ -288,9 +328,9 @@ function getLegend(svgName, infoColours, width, height, margin){
 
 	// get the coordinates for the legend and its content
 	var legendX = width + margin.left + 10;
-	var legendY = 0;
+	var legendY = margin.top + 10;
 	var legendWidth = margin.right - 50;
-	var legendHeight = 	height;
+	var legendHeight = 	height - 20;
 	var colourWidth = legendWidth/6;
 	var legendBorder = 15;
 	var infoWidth = legendWidth - colourWidth - (legendBorder * 3);

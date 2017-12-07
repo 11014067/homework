@@ -22,7 +22,19 @@ GNI per capita, PPP (current international $)
 		<h3 class="mapTitle"></h3>
 		<svg width="850" height="350" class="mapSVG"></svg>
 		<h3 class="plotTitle"></h3>
-		<svg width="850" height="350" class="plotSVG"></svg>
+		<h4>X axis options: 
+			<button onclick="changeAxis('x', 'HPI')">HPI</button>
+			<button onclick="changeAxis('x', 'Wellbeing')">Wellbeing</button>
+			<button onclick="changeAxis('x', 'Ecological footprint')">Ecological footprint</button>
+			<button onclick="changeAxis('x', 'Life expectancy')">Life expectancy</button>
+		</h4>
+		<h4>Y axis options: 
+			<button onclick="changeAxis('y', 'HPI')">HPI</button>
+			<button onclick="changeAxis('y', 'Wellbeing')">Wellbeing</button>
+			<button onclick="changeAxis('y', 'Ecological footprint')">Ecological footprint</button>
+			<button onclick="changeAxis('y', 'Life expectancy')">Life expectancy</button>
+		</h4>
+		<svg width="850" height="400" class="plotSVG"></svg>
 		<h4>And click <a href="https://data.worldbank.org/indicator/NY.GNP.PCAP.PP.CD">this link</a> to learn more about the GNI per country.</h4>
 		<h4>Click <a href="http://happyplanetindex.org/">this link</a> to learn more about the Happy Plannet Index.</h4>
 		<h5>This site was made by Sanne Oud.</h5>

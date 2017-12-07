@@ -1,11 +1,14 @@
-/**
+/***
 * Name: Sanne Oud 
 * Student number: 11014067
 * Data processing
 *
 * This script holds the css for a line graph
-**/
+***/
 
+/**
+* Standerd look of the countries on the map.
+**/
 .countries{
 	stroke: white;
 	stroke-width: 1.5;
@@ -14,7 +17,9 @@
 	stroke-width: 0.3;
 }
 
-
+/**
+* The titles.
+**/
 .title{
 	fill: black;
 	stroke: none;
@@ -22,14 +27,32 @@
 	font-family: verdana;
 	text-align: center;
 }
-
-.dataLine{
-	fill: none;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-	stroke-width: 1.5;
+.mapTitle{
+	fill: black;
+	stroke: none;
+	font-size: 20px;
+	font-family: verdana;
+	text-align: left;
+}
+.plotTitle{
+	fill: black;
+	stroke: none;
+	font-size: 20px;
+	font-family: verdana;
+	text-align: left;
 }
 
+/**
+* Set the style for the scatterplot circles.
+**/
+circle{
+	stroke: white;
+	stroke-width: 1;
+}
+
+/**
+* Set the style for the axis.
+**/
 .x-axis path{
 	fill: none;
 	stroke: black;
@@ -63,6 +86,9 @@
 	text-anchor: middle;
 }
 
+/**
+* Style the legenda.
+**/
 .legenda-discription {
 	fill: black;
 	stroke: none;
@@ -76,11 +102,4 @@
 	font-size: 25px;
 	font-family: verdana;
 	text-anchor: middle;
-}
-
-.information {
-	fill: black;
-	stroke: none;
-	font-size: 12px;
-	font-family: verdana;
 }
