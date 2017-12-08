@@ -128,7 +128,7 @@ function drawMap(countries, GNIdata, svgName){
 			.enter()
 			.append("path")
 				.attr("d", path)
-				.attr("class", function(d) { return d.properties.name.split(" ").splice(-1); })
+				.attr("class", function(d) { return d.properties.name.replace(" ", "-"); })
 				.style("fill", function(d) { return colour(d.Income); })
 				.on("mouseover", function(d) {
 					d3.select(this)
@@ -142,7 +142,7 @@ function drawMap(countries, GNIdata, svgName){
 						.style("stroke", "white");
 				})
 				.on("click", function(d) {
-					countryClicked(d.properties.name.split(" ").splice(-1), "circle");
+					countryClicked(d.properties.name.replace(" ", "-"), "circle");
 				})
 				.append("title")
 					.text( function(d) { return d.properties.name + ", GNI : " + CountryGNI[d.properties.name]; });
@@ -265,7 +265,7 @@ function drawPlot(svgName){
 		.data(HPIdata)
 		.enter()
 		.append("circle")
-			.attr("class", function(d) { return d.Country.split(" ").splice(-1); })
+			.attr("class", function(d) { return d.Country.replace(" ", "-"); })
 			.attr("r", 3)
 			.attr("cx", function(d) { return x(d[xName]); })
 			.attr("cy", function(d) { return y(d[yName]); })
@@ -289,7 +289,7 @@ function drawPlot(svgName){
 					.style("stroke", "white");
 			})
 			.on("click", function(d) {
-				countryClicked(d.Country.split(" ").splice(-1), "path");
+				countryClicked(d.Country.replace(" ", "-"), "path");
 			})
 			.append("title")
 				.text( function(d) { return d.Country; });	
