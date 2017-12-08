@@ -6,16 +6,16 @@
 * Gross national income per capita at purchasing power parity, (current USD)
 * Data is from: "https://data.worldbank.org/indicator/NY.GNP.PCAP.PP.CD"
 *
-*
+* The countries dataset is from:
 * https://raw.githubusercontent.com/jdamiani27/Data-Visualization-and-D3/master/lesson4/world_countries.json
 **/
 
 /**
 * Make some global variables so the plot can be changed without reloading the data.
 **/
-var GNIdata, HPIdata
-var yName = "Wellbeing"
-var xName = "HPI"
+var GNIdata, HPIdata;
+var yName = "Wellbeing";
+var xName = "HPI";
 
 /**
 * Change the axis on the plot.
@@ -72,7 +72,7 @@ function checkData(error, countries, GNIdataCheck, HPIdataCheck){
 	// start making th HPI plot
 	drawPlot("plotSVG");
 	
-	d3.select(".title").text("The GNI and HPI in 2016")
+	d3.select(".title").text("The GNI and HPI in 2016");
 }
 
 /**
@@ -85,26 +85,22 @@ function drawMap(countries, GNIdata, svgName){
 		return Math.round(d.Income/10000)*10000; 
 	});
 	
-	var format = d3.format(",");
-	
-	// get the svg and add g for the map
+	// get the svg and add a g for the map
 	mapSVG = d3.selectAll("." + svgName)
 		.append('g')
 		.attr('class', 'map');			
 
-	// get the margins
-	var margin = {top: 20, right: 300, bottom: 20, left: 0},
-		width = +d3.selectAll(".mapSVG").attr("width") - margin.left - margin.right,
-		height = +d3.selectAll(".mapSVG").attr("height") - margin.top - margin.bottom;
+	// get the size
+	var margin = {top: 20, right: 300, bottom: 20, left: 0};
+	var width = +d3.selectAll(".mapSVG").attr("width") - margin.left - margin.right;
+	var height = +d3.selectAll(".mapSVG").attr("height") - margin.top - margin.bottom;
 	
-	// colour scale
+	// get the colour scale
 	var colour = d3.scale.linear()
 		.domain([0, maximumGNI])
 		.range(["#C6DBEF", "#08519C"]);
 	
-	// unhardcode the legend colours
-	
-	// colours for the legenda
+	// make the colours for the legenda
 	var legendColours = { "0 GNI": colour(0), "20000 GNI": colour(20000), 
 		"40000 GNI": colour(40000), "60000 GNI": colour(60000), 
 		"80000 GNI": colour(80000), "unknown": colour(undefined)
@@ -113,18 +109,18 @@ function drawMap(countries, GNIdata, svgName){
 	// start a path
 	var path = d3.geo.path();
 	
-	// strat the projection and add the path to it
+	// add a projection
 	var projection = d3.geo.mercator()
 		.scale(80)
 		.translate([(width / 2), 240]);
 	var path = d3.geo.path().projection(projection);
 
-	// putting the data in a list
-	var populationById = {};
-	GNIdata.forEach(function(d) { populationById[d.Country] = +d.Income; });
-	countries.features.forEach(function(d) { d.Income = populationById[d.properties.name] });
+	// make a list for the {country: GNI} and add the GNI to the countries
+	var CountryGNI = {};
+	GNIdata.forEach(function(d) { CountryGNI[d.Country] = +d.Income; });
+	countries.features.forEach(function(d) { d.Income = CountryGNI[d.properties.name] });
 	
-	// add the countries to the g
+	// add the countries
 	mapSVG.append("g")
 		.attr("class", "countries")
 		.selectAll("path")
@@ -132,8 +128,8 @@ function drawMap(countries, GNIdata, svgName){
 			.enter()
 			.append("path")
 				.attr("d", path)
-				.attr("class", function(d) { return d.properties.name; })
-				.style("fill", function(d) { return colour(populationById[d.properties.name]); })
+				.attr("class", function(d) { return d.properties.name.split(" ").splice(-1); })
+				.style("fill", function(d) { return colour(d.Income); })
 				.on("mouseover", function(d) {
 					d3.select(this)
 						.style("opacity", 0.8)
@@ -146,17 +142,10 @@ function drawMap(countries, GNIdata, svgName){
 						.style("stroke", "white");
 				})
 				.on("click", function(d) {
-					countryClicked(d.properties.name, "circle");
+					countryClicked(d.properties.name.split(" ").splice(-1), "circle");
 				})
 				.append("title")
-					.text( function(d) { return d.properties.name + ", GNI : " + populationById[d.properties.name]; });
-	
-	// add the names 
-	mapSVG.append("path")
-		.datum(topojson.mesh(countries.features, function(a, b) { return a.id !== b.id; }))
-       // .datum(topojson.mesh(data.features, function(a, b) { return a !== b; }))
-		.attr("class", "names")
-		.attr("d", path);
+					.text( function(d) { return d.properties.name + ", GNI : " + CountryGNI[d.properties.name]; });
 		
 	getLegend(svgName, legendColours, width, height, margin);
 }
@@ -165,62 +154,48 @@ function drawMap(countries, GNIdata, svgName){
 * Draws a scatterplot. 
 **/
 function drawPlot(svgName){
+	// remove the second svg if there and add it empty again
 	d3.select("." + svgName + "2").remove();
-	
 	d3.select("." + svgName)
 		.append("svg")
 			.attr("class", svgName + 2);
 			
 	// write the title
-	if (xName == "HPI"){
-		var xTitle = xName;
-	}
-	else{
-		var xTitle = xName.toLowerCase();
-	};
-	if (yName == "HPI"){
-		var yTitle = yName;
-	}
-	else{
-		var yTitle = yName.toLowerCase();
-	};
+	if (xName == "HPI") { var xTitle = xName; }
+	else{ var xTitle = xName.toLowerCase(); };
+	if (yName == "HPI") { var yTitle = yName; }
+	else{ var yTitle = yName.toLowerCase(); };
 	d3.select(".plotTitle").text("The " + yTitle + " against the " + xTitle + 
 		" coloured by region");
-	
-	// get the name of the wanted data on the x and y axis
-	var yAxisData = yName;
-	var xAxisData = xName;
 
-	// get all the coordinates for the canvas and the graph
+	// get the size
 	var margin = {top: 10, right: 300, bottom: 100, left: 60};
-	var svgWidth = +d3.selectAll("." + svgName).attr("width");
-	var svgHeight = +d3.selectAll("." + svgName).attr("height");
-	var width = svgWidth - margin.left - margin.right;
-	var height = svgHeight - margin.top - margin.bottom;
+	var width = +d3.selectAll("." + svgName).attr("width") - margin.left - margin.right;
+	var height = +d3.selectAll("." + svgName).attr("height") - margin.top - margin.bottom;
 	
-	// get a colour for each region and one for unknown
+	// get the colours for the legend
 	var regionColours = {"Americas": "#A53431", "Asia Pacific": "#D73030",
 		"Europe": "#EA5B1C", "Middle East and North Africa": "#F39205", 
 		"Post-communist": "#FEC911", "Sub Saharan Africa": "#FCEA11", 
 		"Unknown": "#727272"};
 
-	// get the scales for the x axis, y axis and datapoint size
+	// get the scales for the x axis and y axis
 	var x = d3.scale.linear()
 		.range([0, width])
 		.domain([0, d3.max(HPIdata, function(d) {
-			return (d[xAxisData] + 10 - (d[xAxisData] % 10));
+			return (d[xName] + 10 - (d[xName] % 10));
 		})]);
 	var y = d3.scale.linear()
 		.range([height, 0])
 		.domain([0, d3.max(HPIdata, function(d) { 
-			return (d[yAxisData] + 10 - (d[yAxisData] % 10)); 
+			return (d[yName] + 10 - (d[yName] % 10)); 
 		})]);
 	
 	// get the axis
 	var xAxis = d3.svg.axis().scale(x).orient("bottom");
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 	
-	// start an svg for the plot
+	// get an svg for the plot
 	var svg = d3.select("." + svgName + "2")
 		.append("g")
 			.attr("transform", 
@@ -237,20 +212,20 @@ function drawPlot(svgName){
 			.attr("y", margin.bottom / 2)
 			.style("text-anchor", "middle")
 			.text(function() {
-				if (xAxisData == "Life expectancy") {
+				if (xName == "Life expectancy") {
 					return "Life expectancy in years";
 				}
-				else if (xAxisData == "Ecological footprint") {
+				else if (xName == "Ecological footprint") {
 					return "Ecological footprint in gha per person";
 				}
-				else if (xAxisData == "HPI") {
+				else if (xName == "HPI") {
 					return "The happy planet index";
 				}
-				else if(xAxisData == "Wellbeing") {
+				else if(xName == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
 				}
 				else {
-					return xAxisData;
+					return xName;
 				};
 			});
 	
@@ -265,20 +240,20 @@ function drawPlot(svgName){
 			.attr("y", -(margin.left / 2))
 			.style("text-anchor", "middle")
 			.text(function() {
-				if (yAxisData == "Life expectancy") {
+				if (yName == "Life expectancy") {
 					return "Life expectancy in years";
 				}
-				else if (yAxisData == "Ecological footprint") {
+				else if (yName == "Ecological footprint") {
 					return "Ecological footprint in gha per person";
 				}
-				else if (yAxisData == "HPI") {
+				else if (yName == "HPI") {
 					return "The happy planet index";
 				}
-				else if(yAxisData == "Wellbeing") {
+				else if(yName == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
 				}
 				else {
-					return yAxisData;
+					return yName;
 				};
 			});
 
@@ -290,10 +265,10 @@ function drawPlot(svgName){
 		.data(HPIdata)
 		.enter()
 		.append("circle")
-			.attr("class", function(d) { return d.Country; })
+			.attr("class", function(d) { return d.Country.split(" ").splice(-1); })
 			.attr("r", 3)
-			.attr("cx", function(d) { return x(d[xAxisData]); })
-			.attr("cy", function(d) { return y(d[yAxisData]); })
+			.attr("cx", function(d) { return x(d[xName]); })
+			.attr("cy", function(d) { return y(d[yName]); })
 			.style("fill", function(d) { 
 				if (regionColours[d["Region"]]){ 
 					return regionColours[d.Region];
@@ -314,7 +289,7 @@ function drawPlot(svgName){
 					.style("stroke", "white");
 			})
 			.on("click", function(d) {
-				countryClicked(d.Country, "path");
+				countryClicked(d.Country.split(" ").splice(-1), "path");
 			})
 			.append("title")
 				.text( function(d) { return d.Country; });	
