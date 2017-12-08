@@ -289,7 +289,7 @@ function drawPlot(svgName){
 					.style("stroke", "white");
 			})
 			.on("click", function(d) {
-				countryClicked(d.Country.replace(" ", "-"), "path");
+				countryClicked(d.Country.replace(" ", "-")	, "path");
 			})
 			.append("title")
 				.text( function(d) { return d.Country; });	
