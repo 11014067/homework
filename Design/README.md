@@ -9,7 +9,11 @@ Zowel in het filmpje, de informatie box bij het filmpje als bij de sketches staa
 
 ## Contributers
 Aan dit filmpje hebben gewerkt:
+
 Daphne Box
+
 Jasper den Duijf
+
 Sanne Oud
+
 Daphne Witmer
