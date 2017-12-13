@@ -7,17 +7,6 @@
 ***/
 
 /**
-* Standerd look of the countries on the map.
-**/
-.countries{
-	stroke: white;
-	stroke-width: 1.5;
-	opacity: 0.8;
-	stroke: white;
-	stroke-width: 0.3;
-}
-
-/**
 * The titles.
 **/
 .title{
@@ -43,7 +32,7 @@
 }
 
 /**
-* Set the style for the scatterplot circles.
+* The scatterplot circles.
 **/
 circle{
 	stroke: white;
@@ -51,7 +40,7 @@ circle{
 }
 
 /**
-* Set the style for the axis.
+* The axis.
 **/
 .x-axis path{
 	fill: none;
@@ -78,12 +67,14 @@ circle{
 	text-align: left;
 }
 
-.label {
-	fill: black;
-	stroke: none;
-	font-size: 14px;
-	font-family: verdana;
-	text-anchor: middle;
+/**
+* Standerd look of the countries on the map.
+**/
+.countries{
+	stroke: white;
+	stroke-width: 1.5;
+	opacity: 0.8;
+	stroke: white;
 }
 
 /**

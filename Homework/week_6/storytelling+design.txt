@@ -1,0 +1,28 @@
+Storytelling:
+Om inzicht te krijgen in de mogelijke correlatie tussen rijke landen en 
+hoeveel ze een afdruk maken op de aarde vergelijken we op 
+https://11014067.github.io/homework/Homework/week_6/week_6html.html
+de GNI of Gross National Income per capita at purchasing power parity in USD
+met de HPI ofwel Happy Planet Index van 2016. Omdat de HPI cijfers opgemaakt
+worden uit een aantal factoren is het mogelijk om de data uit te zetten over 
+een aantal van deze factoren.
+Omdat het een hoop landen zijn is het mogelijk een land groen te kleuren door
+erop te klikken in een van beide afbeeldingen.
+De kleuren zijn gekozen omdat rood staat voor gezondheid waar geel staat voor
+geluk. Blauw is gekozen omdat het hier mooi tegen afstaat, zodat het duidelijk
+is dat het om andere data gaat.
+
+Design:
+Op de map zijn alle landen te zien waarbij de donkere landen een hoger
+GNI hebben. Deze landen doen het dus goed. Hierbij heb ik gekozen voor blauw 
+zodat het duidelijk is dat het hier om andere data gaat dan in de scatterplot.
+Het scatterplot is namelijk overgenomen uit een eerdere opdracht en wat geel
+naar rood gekleurd voor de verschillende regio's. Deze kleuring is gedaan op 
+alfabetische volgorde.
+Om weer van deze kleuren af te wijken word een land groen als je erop klikt.
+Dit gebeurd in bijde afbeeldingen en gaat weer weg als je in een van de 
+afbeeldingen nog maals op dat land klikt.
+Om nog meer interactiviteit toe te voegen kan je van het scatterplot zelf kiezen
+wat je op welke as wil zien. 
+Om meer te weten te komen over de precieze data kan je de GNI en HPI te weten
+komen door in een van de afbeeldingen over het gewilde land te gaan.

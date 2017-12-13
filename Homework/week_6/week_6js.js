@@ -3,8 +3,12 @@
 * Student number: 11014067
 * Data processing
 *
+* This script makes a map with GNI and a scatterplot with HPI related data. They are
+* interactively linked. Clicking a land in one of the images will colour the edge green in both.
+*
+* HPI data from: "http://happyplanetindex.org/"
 * Gross national income per capita at purchasing power parity, (current USD)
-* Data is from: "https://data.worldbank.org/indicator/NY.GNP.PCAP.PP.CD"
+* data is from: "https://data.worldbank.org/indicator/NY.GNP.PCAP.PP.CD"
 *
 * The countries dataset is from:
 * https://raw.githubusercontent.com/jdamiani27/Data-Visualization-and-D3/master/lesson4/world_countries.json
@@ -18,22 +22,10 @@ var yName = "Wellbeing";
 var xName = "HPI";
 
 /**
-* Change the axis on the plot.
-**/
-function changeAxis(axisName, axisDataName){
-	if (axisName == 'x'){
-		xName = axisDataName;
-	}
-	else if (axisName == 'y') {
-		yName = axisDataName;
-	};
-	drawPlot("plotSVG");
-}
-
-/**
 * Load the wanted csv data files.
 **/
 function getData() {
+	
 	// load the datafiles and afterword check the data
 	queue()
 		.defer(d3.json, "world_countries.json")
@@ -46,6 +38,7 @@ function getData() {
 * Get the data in the wanted format.
 **/
 function checkData(error, countries, GNIdataCheck, HPIdataCheck){
+	
 	// throw an error if there
 	if (error) throw error;
 	
@@ -71,33 +64,29 @@ function checkData(error, countries, GNIdataCheck, HPIdataCheck){
 	
 	// start making th HPI plot
 	drawPlot("plotSVG");
-	
-	d3.select(".title").text("The GNI and HPI in 2016");
 }
 
 /**
 * Draws a map coloured to the data.
 **/
 function drawMap(countries, GNIdata, svgName){
+	
+	// get the svg and write the title
 	d3.select(".mapTitle").text("GNI(Gross national income) per capita at PPP (purchasing power parity) in USD");
-	
-	maximumGNI = d3.max(GNIdata, function (d) { 
-		return Math.round(d.Income/10000)*10000; 
-	});
-	
-	// get the svg and add a g for the map
-	mapSVG = d3.selectAll("." + svgName)
+	var mapSVG = d3.selectAll("." + svgName)
 		.append('g')
 		.attr('class', 'map');			
 
-	// get the size
+	// get the size and margins
 	var margin = {top: 20, right: 300, bottom: 20, left: 0};
 	var width = +d3.selectAll(".mapSVG").attr("width") - margin.left - margin.right;
 	var height = +d3.selectAll(".mapSVG").attr("height") - margin.top - margin.bottom;
 	
 	// get the colour scale
 	var colour = d3.scale.linear()
-		.domain([0, maximumGNI])
+		.domain([0, d3.max(GNIdata, function (d) { 
+			return Math.round(d.Income/10000)*10000; 
+			})])
 		.range(["#C6DBEF", "#08519C"]);
 	
 	// make the colours for the legenda
@@ -106,10 +95,8 @@ function drawMap(countries, GNIdata, svgName){
 		"80000 GNI": colour(80000), "unknown": colour(undefined)
 	};
 	
-	// start a path
+	// start a path with a projection
 	var path = d3.geo.path();
-	
-	// add a projection
 	var projection = d3.geo.mercator()
 		.scale(80)
 		.translate([(width / 2), 240]);
@@ -132,14 +119,11 @@ function drawMap(countries, GNIdata, svgName){
 				.style("fill", function(d) { return colour(d.Income); })
 				.on("mouseover", function(d) {
 					d3.select(this)
-						.style("opacity", 0.8)
-						.style("stroke-width",3);
+						.style("opacity", "0.8");
 				})
 				.on("mouseout", function(d) {
 					d3.select(this)
-						.style("opacity", 1)
-						.style("stroke-width",0.3)
-						.style("stroke", "white");
+						.style("opacity", "1");
 				})
 				.on("click", function(d) {
 					countryClicked(d.properties.name.replace(" ", "-"), "circle");
@@ -147,6 +131,7 @@ function drawMap(countries, GNIdata, svgName){
 				.append("title")
 					.text( function(d) { return d.properties.name + ", GNI : " + CountryGNI[d.properties.name]; });
 		
+	// get a legend
 	getLegend(svgName, legendColours, width, height, margin);
 }
 
@@ -154,6 +139,7 @@ function drawMap(countries, GNIdata, svgName){
 * Draws a scatterplot. 
 **/
 function drawPlot(svgName){
+	
 	// remove the second svg if there and add it empty again
 	d3.select("." + svgName + "2").remove();
 	d3.select("." + svgName)
@@ -280,25 +266,29 @@ function drawPlot(svgName){
 			.on("mouseover", function() {
 				d3.select(this)
 					.attr("fill-opacity", "0.6")
-					.style("stroke-width", ".3");
+					.style("stroke-width", ".8");
 			})
 			.on("mouseout", function() {
 				d3.select(this)
 					.attr("fill-opacity", "1")
-					.style("stroke-width", "1")
-					.style("stroke", "white");
+					.style("stroke-width", "1");
 			})
 			.on("click", function(d) {
 				countryClicked(d.Country.replace(" ", "-")	, "path");
 			})
 			.append("title")
-				.text( function(d) { return d.Country; });	
-		
+				.text( function(d) { return d.Country + ", HPI: " + d.HPI; });	
+	
+	// get a legend
 	getLegend(svgName, regionColours, width, height, margin);
 }
 
-
-function getLegend(svgName, infoColours, width, height, margin){	
+/**
+* Draw the legends.
+**/
+function getLegend(svgName, infoColours, width, height, margin){
+	
+	// get the wanted svg
 	var svg = d3.select("." + svgName);
 
 	// get the coordinates for the legend and its content
@@ -390,8 +380,35 @@ function getLegend(svgName, infoColours, width, height, margin){
 			.text( function(d) { return d; });
 }
 
+/**
+* Colour the data of a clicked country.
+**/
 function countryClicked(countryName, formOfObject) {
+	
+	// check the colour of the object and change it
+	var colourOfObject = d3.selectAll("." + countryName).style("stroke");
 	d3.selectAll("." + countryName)
-		.style("stroke-width", "2")
-		.style("stroke", "green");
+		.style("stroke", function() {
+				if ((colourOfObject) == "rgb(255, 255, 255)") {
+					return "green";
+				}
+				else {
+					return "white";
+				};
+		});
+}
+
+/**
+* Change the axis on the plot.
+**/
+function changeAxis(axisName, axisDataName){
+	
+	// change the Axis to the desired data
+	if (axisName == 'x'){
+		xName = axisDataName;
+	}
+	else if (axisName == 'y') {
+		yName = axisDataName;
+	};
+	drawPlot("plotSVG");
 }
