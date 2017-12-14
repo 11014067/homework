@@ -442,9 +442,11 @@ function changeAxis(axisName, axisDataName){
 }
 
 /**
-* Show the storytelling.
+* Show/hide the storytelling.
 **/
 function showStory() {
+	
+	// show or hide the dropdown
 	if (d3.select(".dropdownContent").style("display") == "none") {
 		d3.select(".dropdownContent").style("display", "block");
 	}
