@@ -129,7 +129,7 @@ function drawMap(countries, GNIdata, svgName){
 					countryClicked(d.properties.name.replace(" ", "-"), "circle");
 				})
 				.append("title")
-					.text( function(d) { return d.properties.name + ", GNI : " + CountryGNI[d.properties.name]; });
+					.text( function(d) { return d.properties.name + ", GNI: " + CountryGNI[d.properties.name]; });
 		
 	// get a legend
 	getLegend(svgName, legendColours, width, height, margin);
@@ -169,12 +169,22 @@ function drawPlot(svgName){
 	var x = d3.scale.linear()
 		.range([0, width])
 		.domain([0, d3.max(HPIdata, function(d) {
-			return (d[xName] + 10 - (d[xName] % 10));
+			if (d[xName] < 1) {
+				return 1;
+			}
+			else {
+				return (d[xName] + 10 - (d[xName] % 10));
+			};
 		})]);
 	var y = d3.scale.linear()
 		.range([height, 0])
 		.domain([0, d3.max(HPIdata, function(d) { 
-			return (d[yName] + 10 - (d[yName] % 10)); 
+			if (d[yName] < 1) {
+				return 1;
+			}
+			else {
+				return (d[yName] + 10 - (d[yName] % 10));
+			}; 
 		})]);
 	
 	// get the axis
@@ -210,6 +220,9 @@ function drawPlot(svgName){
 				else if(xName == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
 				}
+				else if(xName == "Inequality") {
+					return "Inequality of outcome in percentage"
+				}
 				else {
 					return xName;
 				};
@@ -223,7 +236,7 @@ function drawPlot(svgName){
 			.attr("class", "label")
 			.attr("transform", "rotate(-90)")
 			.attr("x", -(height / 2))
-			.attr("y", -(margin.left / 2))
+			.attr("y", -(margin.left / 1.5))
 			.style("text-anchor", "middle")
 			.text(function() {
 				if (yName == "Life expectancy") {
@@ -237,6 +250,9 @@ function drawPlot(svgName){
 				}
 				else if(yName == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
+				}
+				else if(yName == "Inequality") {
+					return "Inequality of outcome in percentages"
 				}
 				else {
 					return yName;
@@ -265,19 +281,17 @@ function drawPlot(svgName){
 				})
 			.on("mouseover", function() {
 				d3.select(this)
-					.attr("fill-opacity", "0.6")
-					.style("stroke-width", ".8");
+					.attr("fill-opacity", "0.6");
 			})
 			.on("mouseout", function() {
 				d3.select(this)
-					.attr("fill-opacity", "1")
-					.style("stroke-width", "1");
+					.attr("fill-opacity", "1");
 			})
 			.on("click", function(d) {
 				countryClicked(d.Country.replace(" ", "-")	, "path");
 			})
 			.append("title")
-				.text( function(d) { return d.Country + ", HPI: " + d.HPI; });	
+				.text( function(d) { return d.Country + ", " + xTitle + " is " + d[xName] + " and " + yTitle + " is " + d[yName]; });	
 	
 	// get a legend
 	getLegend(svgName, regionColours, width, height, margin);
@@ -387,14 +401,28 @@ function countryClicked(countryName, formOfObject) {
 	
 	// check the colour of the object and change it
 	var colourOfObject = d3.selectAll("." + countryName).style("stroke");
+	if ((colourOfObject) == "rgb(255, 255, 255)") {
+		var selected = false
+	}
+	else {
+		var selected = true
+	}
 	d3.selectAll("." + countryName)
 		.style("stroke", function() {
-				if ((colourOfObject) == "rgb(255, 255, 255)") {
+				if (selected == false) {
 					return "green";
 				}
 				else {
 					return "white";
 				};
+		})
+		.style("stroke-width", function() {
+				if (selected == false) {
+					return "2";
+				}
+				else {
+					return "1";
+				}
 		});
 }
 
@@ -411,4 +439,16 @@ function changeAxis(axisName, axisDataName){
 		yName = axisDataName;
 	};
 	drawPlot("plotSVG");
+}
+
+/**
+* Show the storytelling.
+**/
+function showStory() {
+	if (d3.select(".dropdownContent").style("display") == "none") {
+		d3.select(".dropdownContent").style("display", "block");
+	}
+	else {
+		d3.select(".dropdownContent").style("display", "none");
+	}
 }

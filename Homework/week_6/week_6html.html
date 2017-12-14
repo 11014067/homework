@@ -16,21 +16,42 @@ course: data processing
 	</head>
 	<body onload="getData();">
 		<h2 class="title">The GNI and HPI in 2016</h2>
+		<div class="storytelling">
+			<button onclick="showStory();">See the story behind the visualization</button>
+			<div class="dropdownContent" style="display:none"> 
+				<h4> This visualization was made get a view on the possible link between rich countries and 
+				their happiness and how happy they leave the planet. </h4>
+				<h4> To show how "rich" a country is the first visualization shows a map of the world colored to show the GNI 
+				or Gross National Income per capita at purchasing power parity in USD in 2016. The darker the country, 
+				the "richer" that country is. To show the happiness of people and how "happy" a country leaves the earth, 
+				the scatterplot underneath the map shows the HPI or Happy Planet Index. The HPI is made up out of a couple of things
+				which include; ecological footprint, life expectancy and equality of outcome within a country.</h4>
+				<h4> Because the world has a lot of countries and HPI has different factors you can click on a county.
+				After clicking a country in one of the visualizations it gets a green border in both of the visualizations.
+				If you don't want to see that country highlighted anymore, you can just click it again. To see the different 
+				factors of the HPI there are buttons to change what variable you see on which axis of the scatterplot.</h4>
+				<h5> Links to the data is at the end of the page.</h5>
+			</div>
+		</div>
 		<h3 class="mapTitle"></h3>
 		<svg width="850" height="350" class="mapSVG"></svg>
 		<h3 class="plotTitle"></h3>
-		<h4>X axis options: 
-			<button onclick="changeAxis('x', 'HPI')">HPI</button>
-			<button onclick="changeAxis('x', 'Wellbeing')">Wellbeing</button>
-			<button onclick="changeAxis('x', 'Ecological footprint')">Ecological footprint</button>
-			<button onclick="changeAxis('x', 'Life expectancy')">Life expectancy</button>
-		</h4>
-		<h4>Y axis options: 
-			<button onclick="changeAxis('y', 'HPI')">HPI</button>
-			<button onclick="changeAxis('y', 'Wellbeing')">Wellbeing</button>
-			<button onclick="changeAxis('y', 'Ecological footprint')">Ecological footprint</button>
-			<button onclick="changeAxis('y', 'Life expectancy')">Life expectancy</button>
-		</h4>
+		<div class="axisOptions">
+			<h4>X axis options: 
+				<button onclick="changeAxis('x', 'HPI')">HPI</button>
+				<button onclick="changeAxis('x', 'Wellbeing')">Wellbeing</button>
+				<button onclick="changeAxis('x', 'Ecological footprint')">Ecological footprint</button>
+				<button onclick="changeAxis('x', 'Life expectancy')">Life expectancy</button>
+				<button onclick="changeAxis('x', 'Inequality')">Inequality of outcome</button>
+			</h4>
+			<h4>Y axis options: 
+				<button onclick="changeAxis('y', 'HPI')">HPI</button>
+				<button onclick="changeAxis('y', 'Wellbeing')">Wellbeing</button>
+				<button onclick="changeAxis('y', 'Ecological footprint')">Ecological footprint</button>
+				<button onclick="changeAxis('y', 'Life expectancy')">Life expectancy</button>
+				<button onclick="changeAxis('y', 'Inequality')">Inequality of outcome</button>
+			</h4>
+		</div>
 		<svg width="850" height="400" class="plotSVG"></svg>
 		<h4>And click <a href="https://data.worldbank.org/indicator/NY.GNP.PCAP.PP.CD">this link</a> to learn more about the GNI per country.</h4>
 		<h4>Click <a href="http://happyplanetindex.org/">this link</a> to learn more about the Happy Plannet Index.</h4>

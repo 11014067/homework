@@ -15,13 +15,17 @@ is dat het om andere data gaat.
 Design:
 Op de map zijn alle landen te zien waarbij de donkere landen een hoger
 GNI hebben. Deze landen doen het dus goed. Hierbij heb ik gekozen voor blauw 
-zodat het duidelijk is dat het hier om andere data gaat dan in de scatterplot.
-Het scatterplot is namelijk overgenomen uit een eerdere opdracht en wat geel
+zodat het duidelijk is dat het hier om andere data gaat dan in de scatterplot
+en omdat ik zelf blauw verbind met de wet en de economie.
+Het scatterplot is overgenomen uit een eerdere opdracht en wat geel
 naar rood gekleurd voor de verschillende regio's. Deze kleuring is gedaan op 
 alfabetische volgorde.
 Om weer van deze kleuren af te wijken word een land groen als je erop klikt.
 Dit gebeurd in bijde afbeeldingen en gaat weer weg als je in een van de 
-afbeeldingen nog maals op dat land klikt.
+afbeeldingen nog maals op dat land klikt. Ik heb de twee visualisaties verbonden 
+door de landen in beide CSV's precies dezelfde namen mee te geven en deze te 
+gebruiken als class. Nou zijn er meerdere landen met meerdere woorden als naam en 
+dit zoekt wat lastiger door de data, dus vervang ik de spaties in streepjes.
 Om nog meer interactiviteit toe te voegen kan je van het scatterplot zelf kiezen
 wat je op welke as wil zien. 
 Om meer te weten te komen over de precieze data kan je de GNI en HPI te weten
