@@ -3,7 +3,7 @@
 * Student number: 11014067
 * Data processing
 *
-* This script holds the css for a line graph
+* This script holds the css for a map and scatter plot visualisation.
 ***/
 
 /**
@@ -16,14 +16,7 @@
 	font-family: verdana;
 	text-align: center;
 }
-.mapTitle{
-	fill: black;
-	stroke: none;
-	font-size: 20px;
-	font-family: verdana;
-	text-align: left;
-}
-.plotTitle{
+.mapTitle, .plotTitle{
 	fill: black;
 	stroke: none;
 	font-size: 20px;
@@ -40,15 +33,18 @@ circle{
 }
 
 /**
-* The axis.
+* The buttons
 **/
-.x-axis path{
-	fill: none;
-	stroke: black;
-	shape-rendering: crispEdges;
+button{
+	background-color: #e7e7e7;
+	border-radius: 5px;
+	border: 1px solid #000000; 
 }
 
-.y-axis path{
+/**
+* The axis.
+**/
+.x-axis path, .y-axis path{
 	fill: none;
 	stroke: black;
 	shape-rendering: crispEdges;

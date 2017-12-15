@@ -87,15 +87,15 @@ function drawMap(countries, GNIdata, svgName){
 		.domain([0, d3.max(GNIdata, function (d) { 
 			return Math.round(d.Income/10000)*10000; 
 			})])
-		.range(["#C6DBEF", "#08519C"]);
+		.range(["#D5E2EF", "#08519C"]);
 	
 	// make the colours for the legenda
-	var legendColours = { "0 GNI": colour(0), "20000 GNI": colour(20000), 
-		"40000 GNI": colour(40000), "60000 GNI": colour(60000), 
-		"80000 GNI": colour(80000), "unknown": colour(undefined)
+	var legendColours = { "$0": colour(0), "$20000": colour(20000), 
+		"$40000": colour(40000), "$60000": colour(60000), 
+		"$80000": colour(80000), "unknown": colour(undefined)
 	};
 	
-	// start a path with a projection
+	// make the map smaller and do not display antartica
 	var path = d3.geo.path();
 	var projection = d3.geo.mercator()
 		.scale(80)
@@ -104,9 +104,10 @@ function drawMap(countries, GNIdata, svgName){
 
 	// make a list for the {country: GNI} and add the GNI to the countries
 	var CountryGNI = {};
-	GNIdata.forEach(function(d) { CountryGNI[d.Country] = +d.Income; });
-	countries.features.forEach(function(d) { d.Income = CountryGNI[d.properties.name] });
-	
+	GNIdata.forEach(function(d) { 
+		CountryGNI[d.Country] = +d.Income; 
+		});
+		
 	// add the countries
 	mapSVG.append("g")
 		.attr("class", "countries")
@@ -116,20 +117,20 @@ function drawMap(countries, GNIdata, svgName){
 			.append("path")
 				.attr("d", path)
 				.attr("class", function(d) { return d.properties.name.replace(" ", "-"); })
-				.style("fill", function(d) { return colour(d.Income); })
+				.style("fill", function(d) { return colour(CountryGNI[d.properties.name]); })
 				.on("mouseover", function(d) {
-					d3.select(this)
-						.style("opacity", "0.8");
+					d3.select(this).style("opacity", "0.8");
 				})
 				.on("mouseout", function(d) {
-					d3.select(this)
-						.style("opacity", "1");
+					d3.select(this).style("opacity", "1");
 				})
 				.on("click", function(d) {
 					countryClicked(d.properties.name.replace(" ", "-"), "circle");
 				})
 				.append("title")
-					.text( function(d) { return d.properties.name + ", GNI: " + CountryGNI[d.properties.name]; });
+					.text( function(d) { 
+						return d.properties.name + ", GNI: " + CountryGNI[d.properties.name]; 
+					});
 		
 	// get a legend
 	getLegend(svgName, legendColours, width, height, margin);
@@ -139,6 +140,13 @@ function drawMap(countries, GNIdata, svgName){
 * Draws a scatterplot. 
 **/
 function drawPlot(svgName){
+
+	// colour the buttons that are used
+	buttonClassX = ".x" + xName.split(" ")[0]
+	buttonClassY = ".y" + yName.split(" ")[0]
+	d3.selectAll("button").style("background-color", "#e7e7e7")
+	d3.select(buttonClassX).style("background-color", "#bbbbbb")
+	d3.select(buttonClassY).style("background-color", "#bbbbbb")
 	
 	// remove the second svg if there and add it empty again
 	d3.select("." + svgName + "2").remove();
@@ -147,10 +155,18 @@ function drawPlot(svgName){
 			.attr("class", svgName + 2);
 			
 	// write the title
-	if (xName == "HPI") { var xTitle = xName; }
-	else{ var xTitle = xName.toLowerCase(); };
-	if (yName == "HPI") { var yTitle = yName; }
-	else{ var yTitle = yName.toLowerCase(); };
+	if (xName == "HPI") { 
+		var xTitle = xName; 
+	}
+	else { 
+		var xTitle = xName.toLowerCase(); 
+	};
+	if (yName == "HPI") { 
+		var yTitle = yName; 
+	}
+	else { 
+		var yTitle = yName.toLowerCase(); 
+	};
 	d3.select(".plotTitle").text("The " + yTitle + " against the " + xTitle + 
 		" coloured by region");
 
@@ -217,11 +233,11 @@ function drawPlot(svgName){
 				else if (xName == "HPI") {
 					return "The happy planet index";
 				}
-				else if(xName == "Wellbeing") {
+				else if (xName == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
 				}
-				else if(xName == "Inequality") {
-					return "Inequality of outcome in percentage"
+				else if (xName == "Inequality") {
+					return "Inequality of outcome in percentage";
 				}
 				else {
 					return xName;
@@ -248,11 +264,11 @@ function drawPlot(svgName){
 				else if (yName == "HPI") {
 					return "The happy planet index";
 				}
-				else if(yName == "Wellbeing") {
+				else if (yName == "Wellbeing") {
 					return "Wellbeing on a scale from 0 to 10";
 				}
-				else if(yName == "Inequality") {
-					return "Inequality of outcome in percentages"
+				else if (yName == "Inequality") {
+					return "Inequality of outcome in percentages";
 				}
 				else {
 					return yName;
@@ -280,18 +296,18 @@ function drawPlot(svgName){
 					};
 				})
 			.on("mouseover", function() {
-				d3.select(this)
-					.attr("fill-opacity", "0.6");
+				d3.select(this).attr("fill-opacity", "0.6");
 			})
 			.on("mouseout", function() {
-				d3.select(this)
-					.attr("fill-opacity", "1");
+				d3.select(this).attr("fill-opacity", "1");
 			})
 			.on("click", function(d) {
 				countryClicked(d.Country.replace(" ", "-")	, "path");
 			})
 			.append("title")
-				.text( function(d) { return d.Country + ", " + xTitle + " is " + d[xName] + " and " + yTitle + " is " + d[yName]; });	
+				.text( function(d) { 
+					return d.Country + ", " + xTitle + " is " + d[xName] + " and " + yTitle + " is " + d[yName]; 
+				});	
 	
 	// get a legend
 	getLegend(svgName, regionColours, width, height, margin);
@@ -402,11 +418,11 @@ function countryClicked(countryName, formOfObject) {
 	// check the colour of the object and change it
 	var colourOfObject = d3.selectAll("." + countryName).style("stroke");
 	if ((colourOfObject) == "rgb(255, 255, 255)") {
-		var selected = false
+		var selected = false;
 	}
 	else {
-		var selected = true
-	}
+		var selected = true;
+	};
 	d3.selectAll("." + countryName)
 		.style("stroke", function() {
 				if (selected == false) {
@@ -422,7 +438,7 @@ function countryClicked(countryName, formOfObject) {
 				}
 				else {
 					return "1";
-				}
+				};
 		});
 }
 
